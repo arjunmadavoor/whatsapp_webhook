@@ -10,6 +10,7 @@ from django.views import View
 from django.http import HttpResponse
 from dotenv import load_dotenv
 load_dotenv()
+
 def sendMessageToWhatsApp(phone_number_id, token, from_number, msg_body):
     if msg_body == "Hi":
         msg_body = "Hi Welcome to DevOps!"
@@ -31,26 +32,29 @@ def sendMessageToWhatsApp(phone_number_id, token, from_number, msg_body):
         print("Message sent successfully!")
     else:
         print("Error sending message:", response.text)
+        
 class WhatsAppView(View):
-    whatsapp_token = os.getenv('whatsapp_token')
     verify_token = os.getenv('verify_token')
     def post(self, request):
+        whatsapp_token = os.getenv('whatsapp_token')
+        
         # Parse the request body from the POST
-        body = request.body.decode('utf-8')
+        body_str = request.body.decode('utf-8')
+        body_obj = json.loads(body_str)
 
         # Check the Incoming webhook message
-        print(body)
+        print("Body Object: " + body_obj)
 
         # info on WhatsApp text message payload: https://developers.facebook.com/docs/whatsapp/cloud-api/webhooks/payload-examples#text-messages
-        if 'object' in request.body:
-            if 'entry' in request.body and request.body['entry'][0]['changes'] \
-                and request.body['entry'][0]['changes'][0]['value']['messages'] \
-                and request.body['entry'][0]['changes'][0]['value']['messages'][0]:
+        if 'object' in body_obj:
+            if 'entry' in body_obj and body_obj['entry'][0]['changes'] \
+                and body_obj['entry'][0]['changes'][0]['value']['messages'] \
+                and body_obj['entry'][0]['changes'][0]['value']['messages'][0]:
 
-                phone_number_id = request.body['entry'][0]['changes'][0]['value']['metadata']['phone_number_id']
-                from_number = request.body['entry'][0]['changes'][0]['value']['messages'][0]['from'] # extract the phone number from the webhook payload
-                msg_body = request.body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'] # extract the message text from the webhook payload
-                sendMessageToWhatsApp(phone_number_id, self.whatsapp_token, from_number, msg_body)
+                phone_number_id = body_obj['entry'][0]['changes'][0]['value']['metadata']['phone_number_id']
+                from_number = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['from'] # extract the phone number from the webhook payload
+                msg_body = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'] # extract the message text from the webhook payload
+                sendMessageToWhatsApp(phone_number_id, whatsapp_token, from_number, msg_body)
 
             return HttpResponse(status=200)
         else:
