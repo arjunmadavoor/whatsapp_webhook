@@ -8,11 +8,11 @@ from django.http import JsonResponse
 
 from django.views import View
 from django.http import HttpResponse
-from dotenv import load_dotenv
-load_dotenv()
-
+import environ
+env = environ.Env()
+environ.Env.read_env(env_file='/home/arjunmdr/whatsapp_webhook/.env')
 def sendMessageToWhatsApp(phone_number_id, from_number, msg_body):
-    whatsapp_token = os.environ.get('whatsapp_token')
+    whatsapp_token = env('whatsapp_token')
     try:
         print("phone_number_id: ", phone_number_id)
         print("from_number: ", from_number)
@@ -26,7 +26,6 @@ def sendMessageToWhatsApp(phone_number_id, from_number, msg_body):
             msg_body = "How can we help you?"
         
         url = "https://graph.facebook.com/v12.0/" + str(phone_number_id) + "/messages?access_token=" + str(whatsapp_token)
-        print("url: ", url)
         payload = {
             "messaging_product": "whatsapp",
             "to": from_number,
@@ -43,9 +42,9 @@ def sendMessageToWhatsApp(phone_number_id, from_number, msg_body):
         print("ERROR: ", _e)
         
 class WhatsAppView(View):
-    verify_token = os.environ.get('verify_token')
+    verify_token = env('verify_token')
     def post(self, request):
-        whatsapp_token = os.environ.get('whatsapp_token')
+        whatsapp_token = env('whatsapp_token')
         
         # Parse the request body from the POST
         body_str = request.body.decode('utf-8')
@@ -75,7 +74,7 @@ class WhatsAppView(View):
         Handles GET requests to verify the webhook
         """
         # Update your verify token
-        verify_token = "mysampletoken24"
+        verify_token = env('verify_token')
         # Parse params from the webhook verification request
         mode = request.GET.get("hub.mode")
         token = request.GET.get("hub.verify_token")
