@@ -19,11 +19,11 @@ def sendMessageToWhatsApp(phone_number_id, from_number, msg_body):
         print("msg_body: ", msg_body)
         
         if msg_body == "Hi":
-            msg_body = "Hi Welcome to DevOps!"
+            msg_body = "Hello, Welcome to MoneySukh!"
         elif msg_body == "Thanks":
             msg_body = "Welcome!"
         else:
-            msg_body = "How can we help you?"
+            msg_body = "Sorry! How can we help you?"
         
         url = "https://graph.facebook.com/v12.0/" + str(phone_number_id) + "/messages?access_token=" + str(whatsapp_token)
         payload = {
