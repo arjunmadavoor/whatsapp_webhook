@@ -58,23 +58,26 @@ class WhatsAppView(View):
 
     def get(self, request):
         """
-        This will be the Verify Token value when you set up webhook
+        Handles GET requests to verify the webhook
         """
-        verify_token = request.GET.get('hub.verify_token')
-
-        # Check if a token was sent
-        if verify_token:
-            # Check the token sent is correct
-            if verify_token == self.verify_token:
+        # Update your verify token
+        verify_token = "mysampletoken24"
+        
+        # Parse params from the webhook verification request
+        mode = request.GET.get("hub.mode")
+        token = request.GET.get("hub.verify_token")
+        challenge = request.GET.get("hub.challenge")
+        
+        # Check if a token and mode were sent
+        if mode and token:
+            # Check the mode and token sent are correct
+            if mode == "subscribe" and token == verify_token:
                 # Respond with 200 OK and challenge token from the request
-                print('WEBHOOK_VERIFIED')
-                return HttpResponse(request.GET.get('hub.challenge'))
+                print("WEBHOOK_VERIFIED")
+                return HttpResponse(challenge, status=200)
             else:
                 # Responds with '403 Forbidden' if verify tokens do not match
                 return HttpResponse(status=403)
-        else:
-            # If there is no token in the request, return a '400 Bad Request' status code
-            return HttpResponse(status=400)
         
     
 
