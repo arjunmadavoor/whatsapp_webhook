@@ -11,7 +11,7 @@ from django.http import HttpResponse
 from dotenv import load_dotenv
 load_dotenv()
 
-def sendMessageToWhatsApp(phone_number_id, token, from_number, msg_body):
+def sendMessageToWhatsApp(phone_number_id, whatsapp_token, from_number, msg_body):
     try:
         print("phone_number_id: ", phone_number_id)
         print("from_number: ", from_number)
@@ -24,7 +24,8 @@ def sendMessageToWhatsApp(phone_number_id, token, from_number, msg_body):
         else:
             msg_body = "How can we help you?"
         
-        url = "https://graph.facebook.com/v12.0/" + str(phone_number_id) + "/messages?access_token=" + str(token)
+        url = "https://graph.facebook.com/v12.0/" + str(phone_number_id) + "/messages?access_token=" + whatsapp_token
+        print("url: ", url)
         payload = {
             "messaging_product": "whatsapp",
             "to": from_number,
