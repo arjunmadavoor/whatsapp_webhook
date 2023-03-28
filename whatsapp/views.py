@@ -11,7 +11,8 @@ from django.http import HttpResponse
 from dotenv import load_dotenv
 load_dotenv()
 
-def sendMessageToWhatsApp(phone_number_id, whatsapp_token, from_number, msg_body):
+def sendMessageToWhatsApp(phone_number_id, from_number, msg_body):
+    whatsapp_token = os.environ.get('whatsapp_token')
     try:
         print("phone_number_id: ", phone_number_id)
         print("from_number: ", from_number)
@@ -24,7 +25,7 @@ def sendMessageToWhatsApp(phone_number_id, whatsapp_token, from_number, msg_body
         else:
             msg_body = "How can we help you?"
         
-        url = "https://graph.facebook.com/v12.0/" + str(phone_number_id) + "/messages?access_token=" + whatsapp_token
+        url = "https://graph.facebook.com/v12.0/" + str(phone_number_id) + "/messages?access_token=" + str(whatsapp_token)
         print("url: ", url)
         payload = {
             "messaging_product": "whatsapp",
@@ -42,9 +43,9 @@ def sendMessageToWhatsApp(phone_number_id, whatsapp_token, from_number, msg_body
         print("ERROR: ", _e)
         
 class WhatsAppView(View):
-    verify_token = os.getenv('verify_token')
+    verify_token = os.environ.get('verify_token')
     def post(self, request):
-        whatsapp_token = os.getenv('whatsapp_token')
+        whatsapp_token = os.environ.get('whatsapp_token')
         
         # Parse the request body from the POST
         body_str = request.body.decode('utf-8')
@@ -62,7 +63,7 @@ class WhatsAppView(View):
                 phone_number_id = body_obj['entry'][0]['changes'][0]['value']['metadata']['phone_number_id']
                 from_number = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['from'] # extract the phone number from the webhook payload
                 msg_body = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'] # extract the message text from the webhook payload
-                sendMessageToWhatsApp(phone_number_id, whatsapp_token, from_number, msg_body)
+                sendMessageToWhatsApp(phone_number_id, from_number, msg_body)
 
             return HttpResponse(status=200)
         else:
