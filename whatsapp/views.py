@@ -12,26 +12,33 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def sendMessageToWhatsApp(phone_number_id, token, from_number, msg_body):
-    if msg_body == "Hi":
-        msg_body = "Hi Welcome to DevOps!"
-    elif msg_body == "Thanks":
-        msg_body = "Welcome!"
-    else:
-        msg_body = "How can we help you?"
-    
-    url = "https://graph.facebook.com/v12.0/" + phone_number_id + "/messages?access_token=" + token
-    payload = {
-        "messaging_product": "whatsapp",
-        "to": from_number,
-        "text": { "body": msg_body }
-    }
-    headers = {"Content-Type": "application/json"}
-    
-    response = requests.post(url, data=json.dumps(payload), headers=headers)
-    if response.status_code == 200:
-        print("Message sent successfully!")
-    else:
-        print("Error sending message:", response.text)
+    try:
+        print("phone_number_id: ", phone_number_id)
+        print("from_number: ", from_number)
+        print("msg_body: ", msg_body)
+        
+        if msg_body == "Hi":
+            msg_body = "Hi Welcome to DevOps!"
+        elif msg_body == "Thanks":
+            msg_body = "Welcome!"
+        else:
+            msg_body = "How can we help you?"
+        
+        url = "https://graph.facebook.com/v12.0/" + str(phone_number_id) + "/messages?access_token=" + str(token)
+        payload = {
+            "messaging_product": "whatsapp",
+            "to": from_number,
+            "text": { "body": msg_body }
+        }
+        headers = {"Content-Type": "application/json"}
+        
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
+        if response.status_code == 200:
+            print("Message sent successfully!")
+        else:
+            print("Error sending message:", response.text)
+    except Exception as _e:
+        print("ERROR: ", _e)
         
 class WhatsAppView(View):
     verify_token = os.getenv('verify_token')
@@ -43,7 +50,7 @@ class WhatsAppView(View):
         body_obj = json.loads(body_str)
 
         # Check the Incoming webhook message
-        print("Body Object: " + body_obj)
+        print("Body Object: ", body_obj)
 
         # info on WhatsApp text message payload: https://developers.facebook.com/docs/whatsapp/cloud-api/webhooks/payload-examples#text-messages
         if 'object' in body_obj:
