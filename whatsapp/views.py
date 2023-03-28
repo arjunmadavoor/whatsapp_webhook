@@ -1,14 +1,15 @@
 from django.shortcuts import render
 
 # Create your views here.
-
+import os
 import json
 import requests
 from django.http import JsonResponse
 
 from django.views import View
 from django.http import HttpResponse
-
+from dotenv import load_dotenv
+load_dotenv()
 def sendMessageToWhatsApp(phone_number_id, token, from_number, msg_body):
     if msg_body == "Hi":
         msg_body = "Hi Welcome to DevOps!"
@@ -31,8 +32,8 @@ def sendMessageToWhatsApp(phone_number_id, token, from_number, msg_body):
     else:
         print("Error sending message:", response.text)
 class WhatsAppView(View):
-    whatsapp_token = "EAAap7H54bbcBAGBKCDeAhzONIWARoFQk4XVjt2YwcA0BR1cqgV5LfT6nQgF6wnGmjrCySjRhjvUt3T2AiQdKJY2LMW1cJA3QiNnO7XEzp8lgv6n0ZCbUgxZANGU6loZBZCo0iOCZBUEd8KRZAYJbACy8CfPxieCDczsKEvGjqTfOuGaLNs4WHAKb5A1dk4Ns1SNJSZAUl01V6bMxX6ooj3W"
-    verify_token = "mysampletoken24"
+    whatsapp_token = os.getenv('whatsapp_token')
+    verify_token = os.getenv('verify_token')
     def post(self, request):
         # Parse the request body from the POST
         body = request.body.decode('utf-8')
