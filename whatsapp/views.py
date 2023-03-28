@@ -62,22 +62,26 @@ class WhatsAppView(View):
         """
         # Update your verify token
         verify_token = "mysampletoken24"
-        
-        # Parse params from the webhook verification request
-        mode = request.GET.get("hub.mode")
-        token = request.GET.get("hub.verify_token")
-        challenge = request.GET.get("hub.challenge")
-        
-        # Check if a token and mode were sent
-        if mode and token:
-            # Check the mode and token sent are correct
-            if mode == "subscribe" and token == verify_token:
-                # Respond with 200 OK and challenge token from the request
-                print("WEBHOOK_VERIFIED")
-                return HttpResponse(challenge, status=200)
+        try:
+            # Parse params from the webhook verification request
+            mode = json.loads(request.GET.get("hub.mode"))
+            token = json.loads(request.GET.get("hub.verify_token"))
+            challenge = json.loads(request.GET.get("hub.challenge"))
+            
+            # Check if a token and mode were sent
+            if mode and token:
+                # Check the mode and token sent are correct
+                if mode == "subscribe" and token == verify_token:
+                    # Respond with 200 OK and challenge token from the request
+                    print("WEBHOOK_VERIFIED")
+                    return HttpResponse(challenge, status=200)
+                else:
+                    # Responds with '403 Forbidden' if verify tokens do not match
+                    return HttpResponse(status=403)
             else:
-                # Responds with '403 Forbidden' if verify tokens do not match
-                return HttpResponse(status=403)
+                return HttpResponse(status=404)
+        except Exception as _e:
+            print(_e)
         
     
 
