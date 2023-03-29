@@ -12,8 +12,32 @@ import environ
 env = environ.Env()
 environ.Env.read_env(env_file='/home/arjunmdr/whatsapp_webhook/.env')
 
+
+import os
+import openai
+
+def open_ai(prompt):
+    try:
+        openai.api_key = env("OPENAI_API_KEY")
+        response: dict = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=prompt,
+        temperature=0.9,
+        max_tokens=1075,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0.6,
+        stop=[" Human:", " AI:"]
+        )
+        choices: dict = response.get('choices')[0]
+        text = choices.get('text')
+    except Exception as _e:
+        print(_e)
+        
+    return text
         
 def sendMessage(phone_number_id, from_number, msg_body, whatsapp_token):
+    msg_body = open_ai(msg_body)
     url = "https://graph.facebook.com/v12.0/" + str(phone_number_id) + "/messages?access_token=" + str(whatsapp_token)
     payload = {
         "messaging_product": "whatsapp",
@@ -42,17 +66,19 @@ def checkMessage(phone_number_id, from_number, msg_body):
         print("from_number: ", from_number)
         print("msg_body: ", msg_body)
         
-        if msg_body == "Hi":
-            msg_body = "Hello, Welcome to MoneySukh! Please answer the following questions to register. Type START for registration. Type STOP to exit from the questions."
-            sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
-        elif msg_body == "START":
-            print()
-        elif msg_body == "Thanks":
-            msg_body = "Welcome!"
-            sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
-        else:
-            msg_body = "Sorry! How can we help you?"
-            sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+        # open_ai(msg_body)
+        sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+        # if msg_body == "Hi":
+        #     msg_body = "Hello, Welcome to MoneySukh! Please answer the following questions to register. Type START for registration. Type STOP to exit from the questions."
+        #     sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+        # elif msg_body == "START":
+        #    open_ai(msg_body)
+        # elif msg_body == "Thanks":
+        #     msg_body = "Welcome!"
+        #     sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+        # else:
+        #     msg_body = "Sorry! How can we help you?"
+        #     sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
         
 
     except Exception as _e:
