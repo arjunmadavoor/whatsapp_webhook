@@ -11,33 +11,50 @@ from django.http import HttpResponse
 import environ
 env = environ.Env()
 environ.Env.read_env(env_file='/home/arjunmdr/whatsapp_webhook/.env')
-def sendMessageToWhatsApp(phone_number_id, from_number, msg_body):
+
+        
+def sendMessage(phone_number_id, from_number, msg_body, whatsapp_token):
+    url = "https://graph.facebook.com/v12.0/" + str(phone_number_id) + "/messages?access_token=" + str(whatsapp_token)
+    payload = {
+        "messaging_product": "whatsapp",
+        "to": from_number,
+        "text": { "body": msg_body }
+    }
+    headers = {"Content-Type": "application/json"}
+    
+    response = requests.post(url, data=json.dumps(payload), headers=headers)
+    if response.status_code == 200:
+        print("Message sent successfully!")
+    else:
+        print("Error sending message:", response.text)
+
+def checkMessage(phone_number_id, from_number, msg_body):
     whatsapp_token = env('whatsapp_token')
+    questions = [
+        'Please type your name: ',
+        'Type your email id: ',
+        'Type your mobile number: ',
+        'Type your Aadhar number: ',
+        'Type your Date of birth: '
+    ]
     try:
         print("phone_number_id: ", phone_number_id)
         print("from_number: ", from_number)
         print("msg_body: ", msg_body)
         
         if msg_body == "Hi":
-            msg_body = "Hello, Welcome to MoneySukh!"
+            msg_body = "Hello, Welcome to MoneySukh! Please answer the following questions to register. Type START for registration. Type STOP to exit from the questions."
+            sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+        elif msg_body == "START":
+            print()
         elif msg_body == "Thanks":
             msg_body = "Welcome!"
+            sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
         else:
             msg_body = "Sorry! How can we help you?"
+            sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
         
-        url = "https://graph.facebook.com/v12.0/" + str(phone_number_id) + "/messages?access_token=" + str(whatsapp_token)
-        payload = {
-            "messaging_product": "whatsapp",
-            "to": from_number,
-            "text": { "body": msg_body }
-        }
-        headers = {"Content-Type": "application/json"}
-        
-        response = requests.post(url, data=json.dumps(payload), headers=headers)
-        if response.status_code == 200:
-            print("Message sent successfully!")
-        else:
-            print("Error sending message:", response.text)
+
     except Exception as _e:
         print("ERROR: ", _e)
         
@@ -62,7 +79,7 @@ class WhatsAppView(View):
                 phone_number_id = body_obj['entry'][0]['changes'][0]['value']['metadata']['phone_number_id']
                 from_number = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['from'] # extract the phone number from the webhook payload
                 msg_body = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'] # extract the message text from the webhook payload
-                sendMessageToWhatsApp(phone_number_id, from_number, msg_body)
+                checkMessage(phone_number_id, from_number, msg_body)
 
             return HttpResponse(status=200)
         else:
