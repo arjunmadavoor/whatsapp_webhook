@@ -50,7 +50,9 @@ def sendMessage(phone_number_id, from_number, msg_body, whatsapp_token):
                 # Check if the question_data field is already a JSON object
                 if data.question_data:
                     # Parse the existing JSON data and append the new question and answer
-                    question_data = json.loads(data.question_data)
+                    # question_data = json.loads(data.question_data)
+                    
+                    question_data = json.loads(str(data.question_data))
                     question_data.append({
                         "question": in_msg,
                         "answer": out_msg,
