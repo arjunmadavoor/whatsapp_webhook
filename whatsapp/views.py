@@ -52,10 +52,10 @@ def sendMessage(phone_number_id, from_number, msg_body, whatsapp_token):
                     # Parse the existing JSON data and append the new question and answer
                     # question_data = json.loads(data.question_data)
                     
-                    question_data = json.loads(str(data.question_data))
+                    question_data = json.loads(data.question_data)
                     question_data.append({
-                        "question": in_msg,
-                        "answer": out_msg,
+                        "question": str(in_msg),
+                        "answer": str(out_msg),
                         "timestamp": str(datetime.now())
                     })
                     # Update the question_data field with the updated JSON object
@@ -64,8 +64,8 @@ def sendMessage(phone_number_id, from_number, msg_body, whatsapp_token):
                 else:
                     # If the question_data field is empty, create a new JSON object with the given question and answer
                     question_data = [{
-                        "question": in_msg,
-                        "answer": out_msg,
+                        "question": str(in_msg),
+                        "answer": str(out_msg),
                         "timestamp": str(datetime.now())
                     }]
                     data.question_data = json.dumps(question_data)
@@ -73,8 +73,8 @@ def sendMessage(phone_number_id, from_number, msg_body, whatsapp_token):
         else:
             # If no instances are found with the given mobile number, create a new instance with the given mobile number and question data
             question_data = [{
-                "question": in_msg,
-                "answer": out_msg,
+                "question": str(in_msg),
+                "answer": str(out_msg),
                 "timestamp": str(datetime.now())
             }]
             data = ChatbotData(mobile_number=from_number, question_data=json.dumps(question_data))
