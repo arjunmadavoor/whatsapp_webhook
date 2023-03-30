@@ -12,7 +12,7 @@ from django.http import HttpResponse
 import environ
 env = environ.Env()
 environ.Env.read_env(env_file='/home/arjunmdr/whatsapp_webhook/.env')
-environ.Env.read_env(env_file='/Users/user/Documents/Projects/whatsapp_env/whatsapp_webhook/.env')
+#environ.Env.read_env(env_file='/Users/user/Documents/Projects/whatsapp_env/whatsapp_webhook/.env')
 
 
 import os
@@ -41,7 +41,7 @@ def open_ai(prompt):
 def sendMessage(phone_number_id, from_number, msg_body, whatsapp_token):
     in_msg = msg_body
     msg_body = open_ai(msg_body)
-    out_msg = msg_body
+    out_msg = str(msg_body)
     data_with_mobile_number = ChatbotData.objects.filter(mobile_number=from_number)
     if data_with_mobile_number.exists():
         # Iterate over the instances with the given mobile number and update the question_data field
