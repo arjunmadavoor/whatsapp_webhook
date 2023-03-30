@@ -32,7 +32,8 @@
 	<div class="chatbox">
 		{% for data in chat_data %}
 				{% comment %} {% for item in data.question_data.0 %} {% endcomment %}
-						<div class="question">{{ data.question_data.0 }} ##### {{ data.mobile_number.0 }}</div>
+						<div class="question">{{ data.question_data.0.question }} : {{ data.mobile_number }}</div>
+						<div class="question">{{ data.question_data.0.answer }} : {{ data.mobile_number }}</div>
 						{% comment %} <div class="answer">{{ item.answer }}</div> {% endcomment %}
 				{% comment %} {% endfor %} {% endcomment %}
 				{% comment %} <div class="question">{{ data.question_data.0.question }}</div>
