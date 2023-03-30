@@ -31,8 +31,10 @@
     <h1>Chatbot Conversation</h1>
 	<div class="chatbox">
 		{% for data in chat_data %}
-				<div class="question">{{ data.question_data.question }}</div>
-				<div class="answer">{{ data.question_data.answer }}</div>
+            {% for message in data.question_data %}
+				<div class="question">{{ message.question }}</div>
+				<div class="answer">{{ message.answer }}</div>
+		    {% endfor %}
 		{% endfor %}
 	</div>
 
