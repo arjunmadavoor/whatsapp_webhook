@@ -1,16 +1,18 @@
 from django.shortcuts import render
-
+from .models import ChatbotData
 # Create your views here.
 import os
 import json
 import requests
 from django.http import JsonResponse
+from datetime import datetime
 
 from django.views import View
 from django.http import HttpResponse
 import environ
 env = environ.Env()
 environ.Env.read_env(env_file='/home/arjunmdr/whatsapp_webhook/.env')
+environ.Env.read_env(env_file='/Users/user/Documents/Projects/whatsapp_env/whatsapp_webhook/.env')
 
 
 import os
@@ -37,7 +39,45 @@ def open_ai(prompt):
     return text
         
 def sendMessage(phone_number_id, from_number, msg_body, whatsapp_token):
+    in_msg = msg_body
     msg_body = open_ai(msg_body)
+    out_msg = msg_body
+    data_with_mobile_number = ChatbotData.objects.filter(mobile_number=from_number)
+    if data_with_mobile_number.exists():
+        # Iterate over the instances with the given mobile number and update the question_data field
+        for data in data_with_mobile_number:
+            # Check if the question_data field is already a JSON object
+            if data.question_data:
+                # Parse the existing JSON data and append the new question and answer
+                question_data = json.loads(data.question_data)
+                question_data.append({
+                    "question": in_msg,
+                    "answer": out_msg,
+                    "timestamp": str(datetime.now())
+                })
+                # Update the question_data field with the updated JSON object
+                data.question_data = json.dumps(question_data)
+                data.save()
+            else:
+                # If the question_data field is empty, create a new JSON object with the given question and answer
+                question_data = [{
+                    "question": in_msg,
+                    "answer": out_msg,
+                    "timestamp": str(datetime.now())
+                }]
+                data.question_data = json.dumps(question_data)
+                data.save()
+    else:
+        # If no instances are found with the given mobile number, create a new instance with the given mobile number and question data
+        question_data = [{
+            "question": in_msg,
+            "answer": out_msg,
+            "timestamp": str(datetime.now())
+        }]
+        data = ChatbotData(mobile_number=from_number, question_data=json.dumps(question_data))
+        data.save()
+    chatbot_data = ChatbotData(mobile_number=from_number, question_data=question_data)
+    chatbot_data.save()
     url = "https://graph.facebook.com/v12.0/" + str(phone_number_id) + "/messages?access_token=" + str(whatsapp_token)
     payload = {
         "messaging_product": "whatsapp",
@@ -65,21 +105,8 @@ def checkMessage(phone_number_id, from_number, msg_body):
         print("phone_number_id: ", phone_number_id)
         print("from_number: ", from_number)
         print("msg_body: ", msg_body)
-        
-        # open_ai(msg_body)
+    
         sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
-        # if msg_body == "Hi":
-        #     msg_body = "Hello, Welcome to MoneySukh! Please answer the following questions to register. Type START for registration. Type STOP to exit from the questions."
-        #     sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
-        # elif msg_body == "START":
-        #    open_ai(msg_body)
-        # elif msg_body == "Thanks":
-        #     msg_body = "Welcome!"
-        #     sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
-        # else:
-        #     msg_body = "Sorry! How can we help you?"
-        #     sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
-        
 
     except Exception as _e:
         print("ERROR: ", _e)
