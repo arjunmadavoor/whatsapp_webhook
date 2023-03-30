@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import ChatbotData
 # Create your views here.
-import os
+import os, sys
 import json
 import requests
 from django.http import JsonResponse
@@ -109,7 +109,9 @@ def checkMessage(phone_number_id, from_number, msg_body):
         sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
 
     except Exception as _e:
-        print("ERROR: ", _e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print("ERROR: ", exc_type, fname, exc_tb.tb_lineno)
         
 class WhatsAppView(View):
     verify_token = env('verify_token')
