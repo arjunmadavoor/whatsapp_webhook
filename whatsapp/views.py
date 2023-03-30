@@ -39,59 +39,66 @@ def open_ai(prompt):
     return text
         
 def sendMessage(phone_number_id, from_number, msg_body, whatsapp_token):
-    in_msg = msg_body
-    msg_body = open_ai(msg_body)
-    out_msg = str(msg_body)
-    data_with_mobile_number = ChatbotData.objects.filter(mobile_number=from_number)
-    if data_with_mobile_number.exists():
-        # Iterate over the instances with the given mobile number and update the question_data field
-        for data in data_with_mobile_number:
-            # Check if the question_data field is already a JSON object
-            if data.question_data:
-                # Parse the existing JSON data and append the new question and answer
-                question_data = json.loads(data.question_data)
-                question_data.append({
-                    "question": in_msg,
-                    "answer": out_msg,
-                    "timestamp": str(datetime.now())
-                })
-                # Update the question_data field with the updated JSON object
-                data.question_data = json.dumps(question_data)
-                data.save()
-            else:
-                # If the question_data field is empty, create a new JSON object with the given question and answer
-                question_data = [{
-                    "question": in_msg,
-                    "answer": out_msg,
-                    "timestamp": str(datetime.now())
-                }]
-                data.question_data = json.dumps(question_data)
-                data.save()
-    else:
-        # If no instances are found with the given mobile number, create a new instance with the given mobile number and question data
-        question_data = [{
-            "question": in_msg,
-            "answer": out_msg,
-            "timestamp": str(datetime.now())
-        }]
-        data = ChatbotData(mobile_number=from_number, question_data=json.dumps(question_data))
-        data.save()
-    chatbot_data = ChatbotData(mobile_number=from_number, question_data=question_data)
-    chatbot_data.save()
-    url = "https://graph.facebook.com/v12.0/" + str(phone_number_id) + "/messages?access_token=" + str(whatsapp_token)
-    payload = {
-        "messaging_product": "whatsapp",
-        "to": from_number,
-        "text": { "body": msg_body }
-    }
-    headers = {"Content-Type": "application/json"}
-    
-    response = requests.post(url, data=json.dumps(payload), headers=headers)
-    if response.status_code == 200:
-        print("Message sent successfully!")
-    else:
-        print("Error sending message:", response.text)
-
+    try:
+        in_msg = msg_body
+        msg_body = open_ai(msg_body)
+        out_msg = str(msg_body)
+        data_with_mobile_number = ChatbotData.objects.filter(mobile_number=from_number)
+        if data_with_mobile_number.exists():
+            # Iterate over the instances with the given mobile number and update the question_data field
+            for data in data_with_mobile_number:
+                # Check if the question_data field is already a JSON object
+                if data.question_data:
+                    # Parse the existing JSON data and append the new question and answer
+                    question_data = json.loads(data.question_data)
+                    question_data.append({
+                        "question": in_msg,
+                        "answer": out_msg,
+                        "timestamp": str(datetime.now())
+                    })
+                    # Update the question_data field with the updated JSON object
+                    data.question_data = json.dumps(question_data)
+                    data.save()
+                else:
+                    # If the question_data field is empty, create a new JSON object with the given question and answer
+                    question_data = [{
+                        "question": in_msg,
+                        "answer": out_msg,
+                        "timestamp": str(datetime.now())
+                    }]
+                    data.question_data = json.dumps(question_data)
+                    data.save()
+        else:
+            # If no instances are found with the given mobile number, create a new instance with the given mobile number and question data
+            question_data = [{
+                "question": in_msg,
+                "answer": out_msg,
+                "timestamp": str(datetime.now())
+            }]
+            data = ChatbotData(mobile_number=from_number, question_data=json.dumps(question_data))
+            data.save()
+        chatbot_data = ChatbotData(mobile_number=from_number, question_data=question_data)
+        chatbot_data.save()
+        url = "https://graph.facebook.com/v12.0/" + str(phone_number_id) + "/messages?access_token=" + str(whatsapp_token)
+        payload = {
+            "messaging_product": "whatsapp",
+            "to": from_number,
+            "text": { "body": msg_body }
+        }
+        headers = {"Content-Type": "application/json"}
+        
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
+        if response.status_code == 200:
+            print("Message sent successfully!")
+        else:
+            print("Error sending message:", response.text)
+            
+    except Exception as _e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print("ERROR: ", exc_type, fname, exc_tb.tb_lineno)
+        
+        
 def checkMessage(phone_number_id, from_number, msg_body):
     whatsapp_token = env('whatsapp_token')
     questions = [
@@ -101,18 +108,12 @@ def checkMessage(phone_number_id, from_number, msg_body):
         'Type your Aadhar number: ',
         'Type your Date of birth: '
     ]
-    try:
-        print("phone_number_id: ", phone_number_id)
-        print("from_number: ", from_number)
-        print("msg_body: ", msg_body)
-    
-        sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+    print("phone_number_id: ", phone_number_id)
+    print("from_number: ", from_number)
+    print("msg_body: ", msg_body)
 
-    except Exception as _e:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print("ERROR: ", exc_type, fname, exc_tb.tb_lineno)
-        
+    sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+
 class WhatsAppView(View):
     verify_token = env('verify_token')
     def post(self, request):
