@@ -132,7 +132,7 @@ class WhatsAppView(View):
                 phone_number_id = body_obj['entry'][0]['changes'][0]['value']['metadata']['phone_number_id']
                 from_number = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['from'] # extract the phone number from the webhook payload
                 msg_body = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'] # extract the message text from the webhook payload
-                checkMessage(phone_number_id, from_number, msg_body)
+                checkMessage(str(phone_number_id), str(from_number), str(msg_body))
 
             return HttpResponse(status=200)
         else:
