@@ -20,6 +20,7 @@ header {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    background-color: #fff;
 }
 .chatbox .question {
     background-color: #f2f2f2;
