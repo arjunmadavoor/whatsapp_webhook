@@ -1,5 +1,6 @@
 body {
     font-family: 'Poppins', sans-serif;
+    background-color: #fffaf7;
   }
 
 header {
@@ -8,6 +9,7 @@ header {
     flex-direction: row;
     text-align: center;
     justify-content: center;
+    color: #128c7e;
 }
 .chatbox {
     border: 1px solid #ccc;
