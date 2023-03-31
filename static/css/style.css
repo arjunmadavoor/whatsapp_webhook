@@ -1,7 +1,14 @@
 body {
     font-family: 'Poppins', sans-serif;
   }
-  
+
+header {
+    display: flex;
+    width: 100vw;
+    flex-direction: row;
+    text-align: center;
+    justify-content: center;
+}
 .chatbox {
     border: 1px solid #ccc;
     border-radius: 5px;
