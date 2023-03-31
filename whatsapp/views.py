@@ -9,9 +9,11 @@ from datetime import datetime
 
 from django.views import View
 from django.http import HttpResponse
+from django.conf import settings
 import environ
 env = environ.Env()
-environ.Env.read_env(env_file='/home/arjunmdr/whatsapp_webhook/.env')
+env_path = os.path.join(settings.BASE_DIR, 'whatsapp_webhook/.env')
+environ.Env.read_env(env_file=env_path)
 #environ.Env.read_env(env_file='/Users/user/Documents/Projects/whatsapp_env/whatsapp_webhook/.env')
 
 
@@ -113,8 +115,12 @@ def checkMessage(phone_number_id, from_number, msg_body):
     print("phone_number_id: ", phone_number_id)
     print("from_number: ", from_number)
     print("msg_body: ", msg_body)
-
+    data_with_mobile_number = ChatbotData.objects.filter(mobile_number=from_number)
     sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+    # if data_with_mobile_number.exists():
+    #     sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+    # else:
+
 
 class WhatsAppView(View):
     verify_token = env('verify_token')
