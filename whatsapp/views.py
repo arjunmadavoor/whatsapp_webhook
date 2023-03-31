@@ -52,14 +52,14 @@ def sendMessage(phone_number_id, from_number, msg_body, whatsapp_token):
                     # Parse the existing JSON data and append the new question and answer
                     # question_data = json.loads(data.question_data)
                     
-                    question_data = json.loads(data.question_data)
+                    question_data = data.question_data
                     question_data.append({
                         "question": str(in_msg),
                         "answer": str(out_msg),
                         "timestamp": str(datetime.now())
                     })
                     # Update the question_data field with the updated JSON object
-                    data.question_data = json.dumps(question_data)
+                    data.question_data = question_data
                     data.save()
                 else:
                     # If the question_data field is empty, create a new JSON object with the given question and answer
@@ -68,7 +68,7 @@ def sendMessage(phone_number_id, from_number, msg_body, whatsapp_token):
                         "answer": str(out_msg),
                         "timestamp": str(datetime.now())
                     }]
-                    data.question_data = json.dumps(question_data)
+                    data.question_data = question_data
                     data.save()
         else:
             # If no instances are found with the given mobile number, create a new instance with the given mobile number and question data
@@ -77,7 +77,7 @@ def sendMessage(phone_number_id, from_number, msg_body, whatsapp_token):
                 "answer": str(out_msg),
                 "timestamp": str(datetime.now())
             }]
-            data = ChatbotData(mobile_number=from_number, question_data=json.dumps(question_data))
+            data = ChatbotData(mobile_number=from_number, question_data=question_data)
             data.save()
         # chatbot_data = ChatbotData(mobile_number=from_number, question_data=question_data)
         # chatbot_data.save()
