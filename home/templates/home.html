@@ -16,14 +16,15 @@
 		.chatbox .question {
 			background-color: #f2f2f2;
 			margin-bottom: 10px;
-			padding: 5px;
+			padding: 8px;
 			border-radius: 5px;
 		}
 		.chatbox .answer {
 			background-color: #d4e6f1;
 			margin-bottom: 10px;
-			padding: 5px;
+			padding: 8px;
 			border-radius: 5px;
+            text-align: right;
 		}
 	</style>
 </head>
@@ -32,8 +33,8 @@
 	<div class="chatbox">
 		{% for data in chat_data %}
             {% for msg in data.question_data %}
-                <div class="question">Human: {{ msg.question }}</div>
-                <div class="answer">AI: {{ msg.answer }}</div>
+                <div class="question">Human:    {{ msg.question }}</div>
+                <div class="answer">AI:     {{ msg.answer }}</div>
             {% endfor %}
 		{% endfor %}
 	</div>
