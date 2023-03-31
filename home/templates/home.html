@@ -31,20 +31,8 @@
     <h1>Chatbot Conversation</h1>
 	<div class="chatbox">
 		{% for data in chat_data %}
-				{% comment %} {% for item in data.question_data.0 %} {% endcomment %}
-						<div class="question">Human: {{ data.question_data.0.question }} : {{ data.mobile_number }}</div>
-						<div class="question">AI: {{ data.question_data.0.answer }} : {{ data.mobile_number }}</div>
-						{% comment %} <div class="answer">{{ item.answer }}</div> {% endcomment %}
-				{% comment %} {% endfor %} {% endcomment %}
-				{% comment %} <div class="question">{{ data.question_data.0.question }}</div>
-				<div class="answer">{{ data.question_data.0.answer }}</div> {% endcomment %}
-			{% comment %} <div class="question">{{ data.question_data }}</div> {% endcomment %}
-            {% comment %} {% for user in data.question_data %}
-                {% for msg in user %}
-                    <div class="question">{{ item.question }}</div>
-                    <div class="answer">{{ item.answer }}</div>
-		        {% endfor %}
-		    {% endfor %} {% endcomment %}
+            <div class="question">Human: {{ data.question_data }}</div>
+            <div class="question">AI: {{ data.question_data }}</div>
 		{% endfor %}
 	</div>
 
