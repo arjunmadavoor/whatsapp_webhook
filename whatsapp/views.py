@@ -79,8 +79,8 @@ def sendMessage(phone_number_id, from_number, msg_body, whatsapp_token):
             }]
             data = ChatbotData(mobile_number=from_number, question_data=json.dumps(question_data))
             data.save()
-        chatbot_data = ChatbotData(mobile_number=from_number, question_data=question_data)
-        chatbot_data.save()
+        # chatbot_data = ChatbotData(mobile_number=from_number, question_data=question_data)
+        # chatbot_data.save()
         url = "https://graph.facebook.com/v12.0/" + str(phone_number_id) + "/messages?access_token=" + str(whatsapp_token)
         payload = {
             "messaging_product": "whatsapp",
