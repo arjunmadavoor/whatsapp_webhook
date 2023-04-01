@@ -128,7 +128,10 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
         data.save()
     else:
         user_question = user_data.question_data
-        if msg_body == "START" and len(user_question) == 0:
+        print("USER QUESTION: ", user_question)
+        print(type(user_question))
+        
+        if str(msg_body) == "START" and len(user_question) == 0:
             msg_body = questions[0]
             question_data = [{
                 "question": msg_body,
@@ -140,10 +143,10 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
             user_data.user_status = user_status
             user_data.save()
             sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
-        elif msg_body == "START" and len(user_question) != 0:
+        elif str(msg_body) == "START" and len(user_question) != 0:
             msg_body = "You have entered a invalid output. Please check!"
             sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
-        elif msg_body == "STOP":
+        elif str(msg_body) == "STOP":
             if user_data.user_status != "complete":
                 question_data = [{}]
                 msg_body = "Okay. We are deleting all your progress...Type START again if you want to register again!"
@@ -154,7 +157,8 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
                 sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
         else:
             question_number = len(user_data.question_data)
-            if question_data < 3:
+            print('question_number ', question_number)
+            if question_number < 3:
                 isAnswered = user_data.question_data[question_number - 1].answer
                 if isAnswered != "":
                     msg_body = questions[question_number]
