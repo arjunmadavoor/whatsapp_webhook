@@ -168,11 +168,11 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
                         "answer": "",
                         "timestamp": str(datetime.now())
                     })
-                    question_data.save()
+                    user_data.save()
                     sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
                 else:
                     question_data = user_data.question_data[question_number - 1]
-                    question_data['answer'] = msg_body
+                    question_data['answer'] = str(msg_body)
                     question_data.save()
                     msg_body = questions[question_number + 1]
                     question_data = user_data.question_data
@@ -181,8 +181,14 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
                         "answer": "",
                         "timestamp": str(datetime.now())
                     })
-                    question_data.save()
+                    user_data.save()
                     sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+                    # if question_number == 3:
+                    #     user_status = user_data.user_status
+                    #     user_status = "complete"
+                    #     user_data.save()
+                    #     msg_body = "Thank you for registering with us. Your application is submited. We will send you a confirmation message once completed."
+                    #     sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
             
             else:
                 msg_body = "You have succesfuly registered. Please conatct the nearest branch if any query. Thankyou!"
