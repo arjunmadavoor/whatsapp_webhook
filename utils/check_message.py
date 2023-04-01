@@ -115,17 +115,17 @@ def checkMessage(phone_number_id, from_number, msg_body):
 def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
     try:
         questions = [
-            'Please type your name: ',
-            'Type your email id: ',
-            'Type your mobile number: ',
-            'Type your Aadhar number: ',
-            'Type your PAN number: ',
+            'To begin, please type in your name so we know who we are creating the account for. 😊',
+            'Next, we will need your email address, so we can send you the confirmation mail and other updates. 📧',
+            'Please enter your mobile number, this will be used to communicate with you during the account creation process. 📱',
+            'To comply with regulations, we will need your Aadhar number. This will help us verify your identity. 🔑',
+            'Finally, please provide us with your PAN number. This is important to ensure that your transactions are seamless. 🤝',
         ]
         total_questions = len(questions)
         try:
             user_data = UserData.objects.get(mobile_number=from_number)
         except UserData.DoesNotExist:
-            msg_body = "👋 Hello there! 👋,\n\n🙌 Welcome to our Demat account creation chatbot! 🙌.\n\nTo create a new account, simply type *START*.\nIf you wish to end the process at any time, type *STOP*.\n\nAnd if you want to delete all your data completely, type *DELETE*.\n\nWe're here to help, so feel free to message us any time! 💬"
+            msg_body = "👋 Hello there! 👋,\n\nWelcome to our Demat account registration chatbot! 🙌.\n\nTo create a new account, simply type *START*.\n\nIf you wish to end the process at any time, type *STOP*.\n\nAnd if you want to delete all your data completely, type *DELETE*.\n\nWe're here to help, so feel free to message us any time! 💬"
             sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
             question_data = []
             data = UserData(mobile_number=from_number, question_data=question_data, created_date=datetime.now(), user_status="notstarted")
@@ -220,9 +220,8 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
             
             elif user_data.user_status == 'complete':
                 msg_body = """
-                Thank you for registering with us 🫶.\n\n
-                Your application has been successfully submitted. We will review it and send you a confirmation message once it's completed.\n\n
-                Thank you for choosing our services! 🙏
+                    Your form has already been submitted 📝. Kindly wait for the confirmation email 📩. If you have already received it, kindly ignore this message.\n\n
+                    Thank you for choosing our services! 🙏
                 """
                 sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
 
