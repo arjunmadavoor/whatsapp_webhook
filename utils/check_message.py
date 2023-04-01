@@ -113,25 +113,27 @@ def checkMessage(phone_number_id, from_number, msg_body):
     # else:
         # something went wrong!
 def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
-    questions = [
-        'Please type your name: ',
-        'Type your email id: ',
-        'Type your mobile number: ',
-    ]
     try:
-        user_data = UserData.objects.get(mobile_number=from_number)
-    except UserData.DoesNotExist:
-        msg_body = "Hello, Welcome to Demat account creation chatbot. PLease type START to create account. Type STOP to end the process."
-        sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
-        question_data = []
-        data = UserData(mobile_number=from_number, question_data=question_data, created_date=datetime.now(), user_status="notstarted")
-        data.save()
-    else:
+        questions = [
+            'Please type your name: ',
+            'Type your email id: ',
+            'Type your mobile number: ',
+        ]
+        total_questions = len(questions)
+        try:
+            user_data = UserData.objects.get(mobile_number=from_number)
+        except UserData.DoesNotExist:
+            msg_body = "Hello, Welcome to Demat account creation chatbot. PLease type START to create account. Type STOP to end the process."
+            sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+            question_data = []
+            data = UserData(mobile_number=from_number, question_data=question_data, created_date=datetime.now(), user_status="notstarted")
+            data.save()
+        # else:
         user_question = user_data.question_data
         print("USER QUESTION: ", user_question)
         print(type(user_question))
         
-        if str(msg_body) == "START" and len(user_question) == 0:
+        if str(msg_body.upper()) == "START" and len(user_question) == 0:
             msg_body = questions[0]
             question_data = [{
                 "question": msg_body,
@@ -143,10 +145,10 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
             user_data.user_status = user_status
             user_data.save()
             sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
-        elif str(msg_body) == "START" and len(user_question) != 0:
+        elif str(msg_body.upper()) == "START" and len(user_question) != 0:
             msg_body = "You have entered a invalid output. Please check!"
             sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
-        elif str(msg_body) == "STOP":
+        elif str(msg_body.upper()) == "STOP":
             if user_data.user_status != "complete":
                 question_data = []
                 msg_body = "Okay. We are deleting all your progress...Type START again if you want to register again!"
@@ -155,10 +157,15 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
                 user_data.user_status = user_status
                 user_data.save()
                 sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+        elif str(msg_body.upper()) == "DELETE":
+            user_data = UserData.objects.get(mobile_number=from_number)
+            user_data.delete()
+            msg_body = "We have deleted all your data. Please initialte a chat to signup again.."
+            sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
         else:
             question_number = len(user_data.question_data)
             print('question_number ', question_number)
-            if question_number < 3:
+            if question_number <= int(total_questions) and user_data.user_status != 'complete': #3
                 isAnswered = user_data.question_data[question_number - 1]['answer']
                 if isAnswered != "":
                     msg_body = questions[question_number]
@@ -174,15 +181,22 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
                     question_data = user_data.question_data[question_number - 1]
                     question_data['answer'] = str(msg_body)
                     user_data.save()
-                    msg_body = questions[question_number + 1]
-                    question_data = user_data.question_data
-                    question_data.append({
-                        "question": msg_body,
-                        "answer": "",
-                        "timestamp": str(datetime.now())
-                    })
-                    user_data.save()
-                    sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+                    if question_number != total_questions:
+                        msg_body = questions[question_number]
+                        question_data = user_data.question_data
+                        question_data.append({
+                            "question": msg_body,
+                            "answer": "",
+                            "timestamp": str(datetime.now())
+                        })
+                        user_data.save()
+                        sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+                    else:
+                        user_status = user_data.user_status
+                        user_status = "complete"
+                        user_data.save()
+                        msg_body = "Thank you for registering with us. Your application is submited. We will send you a confirmation message once completed."
+                        sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
                     # if question_number == 3:
                     #     user_status = user_data.user_status
                     #     user_status = "complete"
@@ -191,6 +205,11 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
                     #     sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
             
             else:
-                msg_body = "You have succesfuly registered. Please conatct the nearest branch if any query. Thankyou!"
+                msg_body = "Something went wrong!"
                 sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
 
+    except Exception as _e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print("ERROR: ", exc_type, fname, exc_tb.tb_lineno)
+        print("EXCEPTION: ", _e)
