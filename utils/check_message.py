@@ -173,7 +173,7 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
                 else:
                     question_data = user_data.question_data[question_number - 1]
                     question_data['answer'] = str(msg_body)
-                    question_data.save()
+                    user_data.save()
                     msg_body = questions[question_number + 1]
                     question_data = user_data.question_data
                     question_data.append({
