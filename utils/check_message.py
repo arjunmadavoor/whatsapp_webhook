@@ -6,6 +6,7 @@ from datetime import datetime
 import openai
 from django.conf import settings
 from whatsapp.models import ChatbotData
+from whatsapp.models import UserData
 import environ
 env = environ.Env()
 env_path = os.path.join(settings.BASE_DIR, '.env')
@@ -88,63 +89,97 @@ def checkMessage(phone_number_id, from_number, msg_body):
     Also sends a message back to the user.
     """
     whatsapp_token = env('whatsapp_token')
-    questions = [
-        'Please type your name: ',
-        'Type your email id: ',
-        'Type your mobile number: ',
-        'Type your Aadhar number: ',
-        'Type your Date of birth: '
-    ]
     print("phone_number_id: ", phone_number_id)
     print("from_number: ", from_number)
     print("msg_body: ", msg_body)
     
-    try:
-        in_msg = msg_body
-        msg_body = open_ai(msg_body)
-        out_msg = str(msg_body)
-        data_with_mobile_number = ChatbotData.objects.filter(mobile_number=from_number)
-        if data_with_mobile_number.exists():
-            # Iterate over the instances with the given mobile number and update the question_data field
-            for data in data_with_mobile_number:
-                # Check if the question_data field is already a JSON object
-                if data.question_data:
-                    # Parse the existing JSON data and append the new question and answer
-                    # question_data = json.loads(data.question_data)
-                    
-                    question_data = data.question_data
-                    question_data.append({
-                        "question": str(in_msg),
-                        "answer": str(out_msg),
-                        "timestamp": str(datetime.now())
-                    })
-                    # Update the question_data field with the updated JSON object
-                    data.question_data = question_data
-                    data.save()
-                else:
-                    # If the question_data field is empty, create a new JSON object with the given question and answer
-                    question_data = [{
-                        "question": str(in_msg),
-                        "answer": str(out_msg),
-                        "timestamp": str(datetime.now())
-                    }]
-                    data.question_data = question_data
-                    data.save()
-        else:
-            # If no instances are found with the given mobile number, create a new instance with the given mobile number and question data
+    manage_user(phone_number_id, from_number, whatsapp_token, msg_body)    
+
+        
+        
+        
+# CheckUserData:
+
+# IF not user:
+    # Send Welcome Message:
+    
+# IF user:
+    # if message == "START":
+        # Ask first question and save to db
+    # elif db contains question array aray and check q is fill and a in empty then consider as answer and ask next question
+    
+    # elif message == "STOP":
+        # drop the user from table
+    # else:
+        # something went wrong!
+def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
+    questions = [
+        'Please type your name: ',
+        'Type your email id: ',
+        'Type your mobile number: ',
+    ]
+    user_data = UserData.objects.filter(mobile_number=from_number)
+    if not user_data.exists():
+        msg_body = "Hello, Welcome to Demat account creation chatbot. PLease type START to create account. Type STOP to end the process."
+        sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+        question_data = [{}]
+        data = UserData(mobile_number=from_number, question_data=question_data, created_date=datetime.now(), user_status="notstarted")
+        data.save()
+    else:
+        user_question = user_data.question_data
+        if msg_body == "START" and len(user_question) == 0:
+            msg_body = questions[0]
             question_data = [{
-                "question": str(in_msg),
-                "answer": str(out_msg),
+                "question": msg_body,
+                "answer": "",
                 "timestamp": str(datetime.now())
             }]
-            data = ChatbotData(mobile_number=from_number, question_data=question_data)
-            data.save()
-        # chatbot_data = ChatbotData(mobile_number=from_number, question_data=question_data)
-        # chatbot_data.save()
-        sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+            user_status="started"
+            user_data.question_data = question_data
+            user_data.user_status = user_status
+            user_data.save()
+            sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+        elif msg_body == "START" and len(user_question) != 0:
+            msg_body = "You have entered a invalid output. Please check!"
+            sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+        elif msg_body == "STOP":
+            if user_data.user_status != "complete":
+                question_data = [{}]
+                msg_body = "Okay. We are deleting all your progress...Type START again if you want to register again!"
+                user_status="notstarted"
+                user_data.question_data = question_data
+                user_data.user_status = user_status
+                user_data.save()
+                sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+        else:
+            question_number = len(user_data.question_data)
+            if question_data < 3:
+                isAnswered = user_data.question_data[question_number - 1].answer
+                if isAnswered != "":
+                    msg_body = questions[question_number]
+                    question_data = data.question_data
+                    question_data.append({
+                        "question": msg_body,
+                        "answer": "",
+                        "timestamp": str(datetime.now())
+                    })
+                    question_data.save()
+                    sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+                else:
+                    question_data = data.question_data[question_number - 1]
+                    question_data.answer = msg_body
+                    question_data.save()
+                    msg_body = questions[question_number + 1]
+                    question_data = data.question_data
+                    question_data.append({
+                        "question": msg_body,
+                        "answer": "",
+                        "timestamp": str(datetime.now())
+                    })
+                    question_data.save()
+                    sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
             
-    except Exception as _e:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print("ERROR: ", exc_type, fname, exc_tb.tb_lineno)
-        print("EXCEPTION: ", _e)
+            else:
+                msg_body = "You have succesfuly registered. Please conatct the nearest branch if any query. Thankyou!"
+                sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+
