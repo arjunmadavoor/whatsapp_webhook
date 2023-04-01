@@ -118,12 +118,14 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
             'Please type your name: ',
             'Type your email id: ',
             'Type your mobile number: ',
+            'Type your Aadhar number: ',
+            'Type your PAN number: ',
         ]
         total_questions = len(questions)
         try:
             user_data = UserData.objects.get(mobile_number=from_number)
         except UserData.DoesNotExist:
-            msg_body = "👋 Hello there! 👋,\n🙌 Welcome to our Demat account creation chatbot! 🙌.\nTo create a new account, simply type *START*.\nIf you wish to end the process at any time, type *STOP*.\nAnd if you want to delete all your data completely, type *DELETE*.\nWe're here to help, so feel free to message us any time! 💬"
+            msg_body = "👋 Hello there! 👋,\n\n🙌 Welcome to our Demat account creation chatbot! 🙌.\n\nTo create a new account, simply type *START*.\nIf you wish to end the process at any time, type *STOP*.\n\nAnd if you want to delete all your data completely, type *DELETE*.\n\nWe're here to help, so feel free to message us any time! 💬"
             sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
             question_data = []
             data = UserData(mobile_number=from_number, question_data=question_data, created_date=datetime.now(), user_status="notstarted")
@@ -151,7 +153,7 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
         elif str(msg_body.upper()) == "STOP":
             if user_data.user_status != "complete":
                 question_data = []
-                msg_body = "Okay😊. We are deleting all your progress...\nType START again if you want to register!"
+                msg_body = "Okay😊. We are deleting all your progress...\n\nType START again if you want to register!"
                 user_status="notstarted"
                 user_data.question_data = question_data
                 user_data.user_status = user_status
@@ -184,7 +186,10 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
                         user_status = "complete"
                         user_data.user_status = user_status
                         user_data.save()
-                        msg_body = "Your form is submited. Please wait for confirmation email. Ignore this if already recieved."
+                        msg_body = """
+                        Your form has already been submitted 📝. Kindly wait for the confirmation email 📩. If you have already received it, kindly ignore this message.\n\n
+                        Thank you for choosing our services! 🙏
+                        """
                         sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
                 else:
                     question_data = user_data.question_data[question_number - 1]
@@ -206,11 +211,19 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
                         user_status = "complete"
                         user_data.user_status = user_status
                         user_data.save()
-                        msg_body = "Thank you for registering with us🫶.\nYour application is submited. We will send you a confirmation message once completed."
+                        msg_body = """
+                            Thank you for registering with us 🫶.\n\n
+                            Your application has been successfully submitted. We will review it and send you a confirmation message once it's completed.\n\n
+                            Thank you for choosing our services! 🙏
+                        """
                         sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
             
-            else:
-                msg_body = "Something went wrong!"
+            elif user_data.user_status == 'complete':
+                msg_body = """
+                Thank you for registering with us 🫶.\n\n
+                Your application has been successfully submitted. We will review it and send you a confirmation message once it's completed.\n\n
+                Thank you for choosing our services! 🙏
+                """
                 sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
 
     except Exception as _e:
