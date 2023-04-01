@@ -125,8 +125,7 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
         try:
             user_data = UserData.objects.get(mobile_number=from_number)
         except UserData.DoesNotExist:
-            msg_body = """👋 Hello there! 👋,\n\nWelcome to our Demat account registration chatbot! 🙌.\n\nTo create a new account, simply type *START*.\n\nIf you wish to end the process at any time, type *STOP*.\n\nAnd if you want to delete all your data completely, type *DELETE*.\n\n
-            If you need more information, you can check out our website at the following URL: https://arjunmadavoor.com. We have plenty of resources there that should help you get all the information you need.\n\n
+            msg_body = """👋 Hello there! 👋,\n\nWelcome to our Demat account registration chatbot! 🙌.\n\nTo create a new account, simply type *START*.\n\nIf you wish to end the process at any time, type *STOP*.\n\nAnd if you want to delete all your data completely, type *DELETE*.\n\nIf you need more information, you can check out our website at the following URL\n\nhttps://arjunmadavoor.com.\n\nWe have plenty of resources there that should help you get all the information you need.\n\n
             We're here to help, so feel free to message us any time! 💬
             """
             sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
@@ -169,10 +168,7 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
             sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
         elif user_data.user_status == 'notstarted':
             msg_body = """
-            Hello and welcome! 😊\n\n
-            We are thrilled that you are interested in registering with us! 🤩\n\n
-            To get started, please use START to initiate the registration process. If you need more information, you can check out our website at the following URL: https://arjunmadavoor.com. We have plenty of resources there that should help you get all the information you need.\n\n
-            We can't wait to have you onboard with us! Let us know if you have any questions or need any assistance. 😃
+            Hello and welcome! 😊\n\nWe are thrilled that you are interested in registering with us! 🤩\n\nTo get started, please use *START* to initiate the registration process.\n\nIf you need more information, you can check out our website at the following url\n\nURL: https://arjunmadavoor.com.\n\nWe have plenty of resources there that should help you get all the information you need.\n\nWe can't wait to have you onboard with us! Let us know if you have any questions or need any assistance. 😃
             """
             sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
             
@@ -199,8 +195,7 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
                         user_data.user_status = user_status
                         user_data.save()
                         msg_body = """
-                        Your form has already been submitted 📝. Kindly wait for the confirmation email 📩. If you have already received it, kindly ignore this message.\n\n
-                        Thank you for choosing our services! 🙏
+                        Your form has already been submitted 📝. Kindly wait for the confirmation email 📩. If you have already received it, kindly ignore this message.\n\nThank you for choosing our services! 🙏
                         """
                         sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
                 else:
@@ -224,16 +219,13 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
                         user_data.user_status = user_status
                         user_data.save()
                         msg_body = """
-                            Thank you for registering with us 🫶.\n\n
-                            Your application has been successfully submitted. We will review it and send you a confirmation message once it's completed.\n\n
-                            Thank you for choosing our services! 🙏
+                        Thank you for registering with us 🫶.\n\nYour application has been successfully submitted. We will review it and send you a confirmation message once it's completed.\n\nThank you for choosing our services! 🙏
                         """
                         sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
             
             elif user_data.user_status == 'complete':
                 msg_body = """
-                    Your form has already been submitted 📝.\n\nKindly wait for the confirmation email 📩.\n\nIf you have already received it, kindly ignore this message.\n\n
-                    Thank you for choosing our services! 🙏
+                Your form has already been submitted 📝.\n\nKindly wait for the confirmation email 📩.\n\nIf you have already received it, kindly ignore this message.\n\nThank you for choosing our services! 🙏
                 """
                 sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
 
