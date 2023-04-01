@@ -118,8 +118,9 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
         'Type your email id: ',
         'Type your mobile number: ',
     ]
-    user_data = UserData.objects.get(mobile_number=from_number)
-    if not user_data.exists():
+    try:
+        user_data = UserData.objects.get(mobile_number=from_number)
+    except UserData.DoesNotExist:
         msg_body = "Hello, Welcome to Demat account creation chatbot. PLease type START to create account. Type STOP to end the process."
         sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
         question_data = [{}]
