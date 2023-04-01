@@ -131,7 +131,7 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
         print("USER QUESTION: ", user_question)
         print(type(user_question))
         
-        if str(msg_body) == "START" and len(user_question) == 0:
+        if str(msg_body) == "START" and not user_question[0]:
             msg_body = questions[0]
             question_data = [{
                 "question": msg_body,
