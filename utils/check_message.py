@@ -123,7 +123,7 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
     except UserData.DoesNotExist:
         msg_body = "Hello, Welcome to Demat account creation chatbot. PLease type START to create account. Type STOP to end the process."
         sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
-        question_data = [{}]
+        question_data = []
         data = UserData(mobile_number=from_number, question_data=question_data, created_date=datetime.now(), user_status="notstarted")
         data.save()
     else:
@@ -131,7 +131,7 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
         print("USER QUESTION: ", user_question)
         print(type(user_question))
         
-        if str(msg_body) == "START" and not user_question[0]:
+        if str(msg_body) == "START" and len(user_question) == 0:
             msg_body = questions[0]
             question_data = [{
                 "question": msg_body,
@@ -148,7 +148,7 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
             sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
         elif str(msg_body) == "STOP":
             if user_data.user_status != "complete":
-                question_data = [{}]
+                question_data = []
                 msg_body = "Okay. We are deleting all your progress...Type START again if you want to register again!"
                 user_status="notstarted"
                 user_data.question_data = question_data
