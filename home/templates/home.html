@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Chatbot Conversation</title>
+	<!-- <style>
+
+	</style> -->
+</head>
+<body>
+    <header>
+        <h1>Chatbot: WhatsApp + OpenAI</h1>
+
+    </header>
+	<div class="chatbox">
+		{% for data in chat_data %}
+            {% for msg in data.question_data %}
+                <div class="question">Human:    {{ msg.question }}</div>
+                <div class="answer">AI:     {{ msg.answer }}</div>
+            {% endfor %}
+		{% endfor %}
+	</div>
+
+</body>
+</html>
+
