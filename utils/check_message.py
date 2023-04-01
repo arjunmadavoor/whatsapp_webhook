@@ -162,7 +162,7 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
                 isAnswered = user_data.question_data[question_number - 1]['answer']
                 if isAnswered != "":
                     msg_body = questions[question_number]
-                    question_data = data.question_data
+                    question_data = user_data.question_data
                     question_data.append({
                         "question": msg_body,
                         "answer": "",
@@ -171,11 +171,11 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
                     question_data.save()
                     sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
                 else:
-                    question_data = data.question_data[question_number - 1]
+                    question_data = user_data.question_data[question_number - 1]
                     question_data['answer'] = msg_body
                     question_data.save()
                     msg_body = questions[question_number + 1]
-                    question_data = data.question_data
+                    question_data = user_data.question_data
                     question_data.append({
                         "question": msg_body,
                         "answer": "",
