@@ -125,8 +125,7 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
         try:
             user_data = UserData.objects.get(mobile_number=from_number)
         except UserData.DoesNotExist:
-            msg_body = """👋 Hello there! 👋,\n\nWelcome to our Demat account registration chatbot! 🙌.\n\nTo create a new account, simply type *START*.\n\nIf you wish to end the process at any time, type *STOP*.\n\nAnd if you want to delete all your data completely, type *DELETE*.\n\nIf you need more information, you can check out our website at the following URL\n\nhttps://arjunmadavoor.com.\n\nWe have plenty of resources there that should help you get all the information you need.\n\n
-            We're here to help, so feel free to message us any time! 💬
+            msg_body = """👋 Hello there! 👋,\n\nWelcome to our Demat account registration chatbot! 🙌.\n\nTo create a new account, simply type *START*.\n\nIf you wish to end the process at any time, type *STOP*.\n\nAnd if you want to delete all your data completely, type *DELETE*.\n\nIf you need more information, you can check out our website at the following URL\n\nURL: https://arjunmadavoor.com\n\nWe have plenty of resources there that should help you get all the information you need.\n\nWe're here to help, so feel free to message us any time! 💬
             """
             sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
             question_data = []
@@ -161,6 +160,12 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
                 user_data.user_status = user_status
                 user_data.save()
                 sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+            elif user_data.user_status == "complete":
+                msg_body = "The registration is already complete! Please type *DELETE* if you want to delete your account."
+                sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+            else:
+                msg_body = "Something went wrong!!"
+                sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)  
         elif str(msg_body.upper()) == "DELETE":
             user_data = UserData.objects.get(mobile_number=from_number)
             user_data.delete()
@@ -168,7 +173,7 @@ def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
             sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
         elif user_data.user_status == 'notstarted':
             msg_body = """
-            Hello and welcome! 😊\n\nWe are thrilled that you are interested in registering with us! 🤩\n\nTo get started, please use *START* to initiate the registration process.\n\nIf you need more information, you can check out our website at the following url\n\nURL: https://arjunmadavoor.com.\n\nWe have plenty of resources there that should help you get all the information you need.\n\nWe can't wait to have you onboard with us! Let us know if you have any questions or need any assistance. 😃
+            Hello and welcome! 😊\n\nWe are thrilled that you are interested in registering with us! 🤩\n\nTo get started, please use *START* to initiate the registration process.\n\nIf you need more information, you can check out our website at the following url\n\nURL: https://arjunmadavoor.com\n\nWe have plenty of resources there that should help you get all the information you need.\n\nWe can't wait to have you onboard with us! Let us know if you have any questions or need any assistance. 😃
             """
             sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
             
