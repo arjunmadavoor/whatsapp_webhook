@@ -1,5 +1,3 @@
-
-
 import os, sys
 import json
 import requests
@@ -14,6 +12,18 @@ env_path = os.path.join(settings.BASE_DIR, '.env')
 environ.Env.read_env(env_file=env_path)
 
 def open_ai(prompt):
+    """
+    Generate text using the OpenAI API.
+
+    Args:
+        prompt (str): The prompt for generating text.
+
+    Returns:
+        str: The generated text.
+
+    Raises:
+        Exception: If an error occurs while generating text.
+    """
     try:
         openai.api_key = env("OPENAI_API_KEY")
         response: dict = openai.Completion.create(
@@ -35,6 +45,21 @@ def open_ai(prompt):
   
 
 def sendMessage(phone_number_id, from_number, msg_body, whatsapp_token):
+    """
+    Send a message via WhatsApp using the Facebook Graph API.
+
+    Args:
+        phone_number_id (int): The Facebook ID of the phone number to send the message to.
+        from_number (str): The phone number to send the message.
+        msg_body (str): The body of the message to send.
+        whatsapp_token (str): The access token for the WhatsApp Business API.
+
+    Returns:
+        None.
+
+    Raises:
+        Exception: If an error occurs while sending the message.
+    """
     try:
         url = "https://graph.facebook.com/v12.0/" + str(phone_number_id) + "/messages?access_token=" + str(whatsapp_token)
         payload = {
@@ -57,6 +82,11 @@ def sendMessage(phone_number_id, from_number, msg_body, whatsapp_token):
         
         
 def checkMessage(phone_number_id, from_number, msg_body):
+    """
+    Checks if a message exists for a given mobile number in the database,
+    updates it if it exists, creates a new one if it does not.
+    Also sends a message back to the user.
+    """
     whatsapp_token = env('whatsapp_token')
     questions = [
         'Please type your name: ',
@@ -117,3 +147,4 @@ def checkMessage(phone_number_id, from_number, msg_body):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print("ERROR: ", exc_type, fname, exc_tb.tb_lineno)
+        print("EXCEPTION: ", _e)

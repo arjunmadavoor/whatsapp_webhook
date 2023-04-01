@@ -1,11 +1,8 @@
 from django.shortcuts import render
-from .models import ChatbotData
 # Create your views here.
-import os, sys
+import os
 import json
-import requests
 from django.http import JsonResponse
-from datetime import datetime
 
 from django.views import View
 from django.http import HttpResponse
