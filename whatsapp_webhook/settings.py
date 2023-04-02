@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'whatsapp',
     'home',
+    'dashboard',
+    'login',
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [

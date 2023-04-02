@@ -15,9 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('whatsapp.urls')),
-    path('', include('home.urls'))
+    path('login/', include('login.urls')),
+    path('dashboard/', include('dashboard.urls')),
+    #  path('logout/', LogoutView.as_view(), name='logout'),
+    
 ]

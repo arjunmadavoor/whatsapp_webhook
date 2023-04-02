@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet" />
+  <link href="{% static 'css/dashboard.css' %}" rel="stylesheet" />
+  <title>Document</title>
+</head>
+<body>
+<div class="table-container">
+  <table class="users-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Mobile</th>
+      <th>Email</th>
+      <th>Status</th>
+      <th>Verify</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in user_data %}
+    <tr>
+      <td>{{ user.question_data.0.answer }}</td>
+      <td>{{ user.mobile_number }}</td>
+      <td>{{ user.question_data.1.answer }}</td>
+      <td>{{ user.user_status }}</td>
+      <td> <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Verify</button> </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+</body>
+</html>
