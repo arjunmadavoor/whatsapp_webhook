@@ -27,3 +27,6 @@ def dashboard_view(request):
 def all_users(request):
     user_data = UserData.objects.all()
     return render(request, 'all_users.html', {'user_data': user_data })
+
+def handler404(request, exception):
+    return render(request, '404.html', status=404)

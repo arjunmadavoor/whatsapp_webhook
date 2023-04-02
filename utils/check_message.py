@@ -115,11 +115,11 @@ def checkMessage(phone_number_id, from_number, msg_body):
 def manage_user(phone_number_id, from_number, whatsapp_token, msg_body):
     try:
         questions = [
-            'To begin, please type in your name so we know who we are creating the account for. 😊',
-            'Next, we will need your email address, so we can send you the confirmation mail and other updates. 📧',
-            'Please enter your mobile number, this will be used to communicate with you during the account creation process. 📱',
-            'To comply with regulations, we will need your Aadhar number. This will help us verify your identity. 🔑',
-            'Finally, please provide us with your PAN number. This is important to ensure that your transactions are seamless. 🤝',
+            'To begin, please type in your *name* so we know who we are creating the account for. 😊',
+            'Next, we will need your *email address*, so we can send you the confirmation mail and other updates. 📧',
+            'Please enter your *mobile number*, this will be used to communicate with you during the account creation process. 📱',
+            'To comply with regulations, we will need your *Aadhar number*. This will help us verify your identity. 🔑',
+            'Finally, please provide us with your *PAN number*. This is important to ensure that your transactions are seamless. 🤝',
         ]
         total_questions = len(questions)
         try:

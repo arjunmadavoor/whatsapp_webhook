@@ -1,32 +1,189 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <title>Chatbot Conversation</title>
-	<!-- <style>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <title>AutoFi</title>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
 
-	</style> -->
-</head>
-<body>
-    <header>
-        <h1>Chatbot: WhatsApp + OpenAI</h1>
+        <div class="header">
+          <nav class="nav">
+            <ul role="list" class="nav-list">
+              <li  class="nav-logo nav-item"><button class="btn-logo">AutoFi</button></li>
+              <li class="nav-item">Features</li>
+              <li class="nav-item">Team</li>
+              <li class="nav-item">Sign In</li>
+            </ul>
+          </nav>
+        </div>
 
-    </header>
-	<div class="chatbox">
-		{% for data in chat_data %}
-            {% for msg in data.question_data %}
-                <div class="question">Human:    {{ msg.question }}</div>
-                <div class="answer">AI:     {{ msg.answer }}</div>
-            {% endfor %}
-		{% endfor %}
-	</div>
+        <div class="hero">
+          <img src="{% static 'img/hero.svg' %}" alt="Hero image">
+          <h1>Automate Your Conversations: Chat with Your Customers Anytime, Anywhere
+          </h1>
+          <p>Unlock the power of automation with our cutting-edge technology. Streamline your communication and gather valuable insights like never before.
+          </p>
+          <button class="btn-primary">Get Started</button>
+        </div>
 
-</body>
+
+        <div class="grid-div">
+          <div class="card-one card-body">
+            <img src="{% static 'img/icon-access-anywhere.svg' %}" alt="access anywhere">
+            <h4 class="card-title">Connect with us</h4>
+            <p class="card-desc">Reach out to our team and let us know your requirements. We will schedule a call to discuss how our automation services can help you achieve your business goals.</p>
+          </div>
+          <div class="card-two card-body">
+            <img src="{% static 'img/icon-security.svg' %}" alt="access anywhere">
+            <h4 class="card-title">Define your workflow</h4>
+            <p class="card-desc">Once we understand your requirements, we will help you define a customized workflow that streamlines your business processes and automates your chat interactions</p>
+          </div>
+          <div class="card-three card-body">
+            <img src="{% static 'img/icon-collaboration.svg' %}" alt="access anywhere">
+            <h4 class="card-title">Build and test</h4>
+            <p class="card-desc">Our team of experts will build the automation system as per your specifications. We will thoroughly test the system to ensure that it meets your expectations and functions smoothly.</p>
+          </div>
+          <div class="card-four card-body">
+            <img src="{% static 'img/icon-any-file.svg' %}" alt="access anywhere">
+            <h4 class="card-title">Launch and optimize</h4>
+            <p class="card-desc">After testing, we will launch the automation system and provide ongoing support to optimize it for maximum efficiency. We also provide regular maintenance and updates to keep the system running smoothly</p>
+          </div>
+        </div>
+
+        <div class="productive-div">
+          <div class="productive-left">
+            <img src="{% static 'img/illustration-stay-productive.png' %}" alt="">
+          </div>
+          <div class="productive-right">
+            <h1>Revolutionize your workflow with our automation solutions</h1>
+            <p>At AutoFi, we believe in the power of automation to streamline your business and make your life easier. Our expert solutions allow you to focus on the important aspects of your work, while we take care of the repetitive tasks that bog you down. From chat automation to data collection, our services are designed to help you maximize productivity and stay ahead of the competition.
+            </p>
+            {% comment %} <br>
+            <p>Never let location be an issue when accessing your files. AutoFi has you
+              covered for all your file storage needs.
+            </p> {% endcomment %}
+            <br>
+            <div class="click-link">
+              <a href="">See how AutoFi works <img src="{% static 'img/icon-arrow.svg' %}" alt="arrow"> </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-div">
+          <div class="testimonial-card-div">
+            <div class="testi-box testi-box-one">
+              <p>Using the automation services of this website has been a game-changer for our business. We're able to save time and resources while providing better customer support. Highly recommended!
+              </p>
+              <div class="testi-avatar">
+                <img class="'avatar-img" src="{% static 'img/profile-1.jpg' %}" alt="">
+                <div class="avatar-details">
+                  <span class="avatar-name">Satish Patel</span>
+                  <span class="avatar-from">Founder & CEO, Huddle</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="testi-box testi-box-two">
+              <p>I was blown away by how easy and effective the automation process was. The team behind this website truly understands the needs of businesses today. Thanks for making my life easier
+              </p>
+              <div class="testi-avatar">
+                <img src="{% static 'img/profile-2.jpg' %}" alt="">
+                <div class="avatar-details">
+                  <span class="avatar-name">Satish Patel</span>
+                  <span class="avatar-from">Founder & CEO, Huddle</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="testi-box testi-box-three">
+              <p>This is the best automation service I've ever used. The attention to detail and personalized support is unmatched. I'm so glad I found this website!
+              </p>
+              <div class="testi-avatar">
+                <img src="{% static 'img/profile-3.jpg' %}" alt="">
+                <div class="avatar-details">
+                  <span class="avatar-name">Satish Patel</span>
+                  <span class="avatar-from">Founder & CEO, Huddle</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-div">
+
+          <div class="contact-form-div">
+            <h1>Get early access today</h1>
+            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat provident numquam quibusdam earum voluptatibus praesentium animi sequi!</span>
+            <form class="contact-form">
+              <input type="text" placeholder="example@gmail.com">
+              <button class="btn-primary">Get Started For Free</button>
+            </form>
+          </div>
+
+          <footer class="'footer">
+            <div class="footer-logo-section">
+              <img src="{% static 'img/logo.svg' %}" alt="Logo">
+            </div>
+           <div class="footer-list-section">
+            <div class="footer-location">
+              <ion-icon class="icn" name="location-outline"></ion-icon>
+              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officiis modi nisi voluptatem, quisquam non neque ex. Quisquam velit voluptatibus eligendi!
+              </p>
+            </div>
+
+            <div class="footer-contact">
+              <ul role="list" class="footer-list">
+                <li class="footer-l-item">
+                  <ion-icon class="icn" name="call-outline"></ion-icon>
+                  +1-543-123-4567
+                </li>
+                <li class="footer-l-item">
+                <ion-icon class="icn" name="mail-outline"></ion-icon>
+                  example@autofi.com
+                </li>
+              </ul>
+            </div>
+
+            <div class="footer-about">
+              <ul role="list" class="footer-list">
+                <li class="footer-l-item">About Us</li>
+                <li class="footer-l-item">Jobs</li>
+                <li class="footer-l-item">Press</li>
+                <li class="footer-l-item">Blog</li>
+              </ul>
+            </div>
+
+            <div class="footer-terms">
+              <ul role="list" class="footer-list">
+                <li class="footer-l-item">Contact Us</li>
+                <li class="footer-l-item">terms</li>
+                <li class="footer-l-item">privacy</li>
+              </ul>
+            </div>
+
+            <div class="footer-social">
+              <i><ion-icon name="logo-facebook"></ion-icon></i>
+              <i><ion-icon name="logo-twitter"></ion-icon></i>
+              <i><ion-icon name="logo-instagram"></ion-icon></i>
+            </div>
+           </div>
+          </footer>
+        </div>
+
+
+      </div>
+    </div>
+  </body>
 </html>
-

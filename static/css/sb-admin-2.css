@@ -11288,3 +11288,7 @@ body.sidebar-toggled footer.sticky-footer {
   align-items: center !important;
   height: 100vh !important;
 }
+
+.home-header1 {
+  color: #e74c3c !important;
+}
