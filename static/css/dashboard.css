@@ -3,11 +3,15 @@
   color: azure;
 }
 .table-container {
-  margin: 2rem;
+ display: flex;
+ flex-direction: column;
+ /* justify-content: center; */
+ align-items: center;
+ height: calc(100vh - 4.3rem - 6rem);
 }
 .users-table {
   border-collapse: collapse;
-  width: 100%;
+  width: 80vw;
   font-family: Arial, sans-serif;
   font-size: 14px;
   margin-top: 20px;

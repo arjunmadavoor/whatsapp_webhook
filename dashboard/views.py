@@ -28,5 +28,17 @@ def all_users(request):
     user_data = UserData.objects.all()
     return render(request, 'all_users.html', {'user_data': user_data })
 
+def registered_users(request):
+    user_data = UserData.objects.filter(user_status="complete")
+    return render(request, 'registered_users.html', {'user_data': user_data })
+
+def verified_users(request):
+    user_data = UserData.objects.filter(user_status="verified")
+    return render(request, 'verified_users.html', {'user_data': user_data })
+
+def pending_users(request):
+    user_data = UserData.objects.filter(user_status="notstarted")
+    return render(request, 'pending_users.html', {'user_data': user_data })
+
 def handler404(request, exception):
     return render(request, '404.html', status=404)

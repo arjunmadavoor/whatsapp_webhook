@@ -24,17 +24,7 @@
       <td>{{ user.mobile_number }}</td>
       <td>{{ user.question_data.1.answer }}</td>
       <td>{{ user.user_status }}</td>
-      <td> 
-        {% if user.user_status == "complete" %}
-          <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Verify</button>
-        {% elif user.user_status == "verified" %}
-          <button class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">Verified</button>
-        {% elif user.user_status == "ongoing" or user.user_status == "started"  %}
-          <button class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm">Pending</button>
-        {% else %}
-          <button class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">!</button>
-        {% endif %}
-      </td>
+      <td> <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Verify</button> </td>
     </tr>
     {% endfor %}
   </tbody>
