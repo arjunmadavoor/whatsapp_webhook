@@ -37,7 +37,7 @@ def verified_users(request):
     return render(request, 'verified_users.html', {'user_data': user_data })
 
 def pending_users(request):
-    user_data = UserData.objects.filter(user_status="notstarted, started",)
+    user_data = UserData.objects.filter(user_status__in=['notstarted', 'started'],)
     return render(request, 'pending_users.html', {'user_data': user_data })
 
 def handler404(request, exception):
