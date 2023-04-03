@@ -25,8 +25,13 @@
       <td>{{ user.question_data.1.answer }}</td>
       <td>{{ user.user_status }}</td>
       <td>
-        <button class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm">Pending</button>
-        <button class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">Send</button>
+        {% if user.user_status == "started" %}
+        <button class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm user-table-btn">Pending</button>
+        <button class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm user-table-btn">Send</button>
+        {% else %}
+        <button class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm user-table-btn">!</button>
+        <button class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm user-table-btn">Send</button>
+        {% endif %}
         </td>
     </tr>
     {% endfor %}

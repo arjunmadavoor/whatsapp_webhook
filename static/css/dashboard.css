@@ -51,3 +51,7 @@
 .verify-no {
   color: red;
 }
+
+.user-table-btn {
+  width: 100px;
+}
