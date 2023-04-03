@@ -168,7 +168,7 @@ p {
 .nav-logo {
   position: absolute;
   left: 130px;
-  top: 30px;
+  /* top: 40px; */
   font-weight: var(--fw-bold);
 }
 .nav-logo img {
@@ -350,6 +350,9 @@ p {
   font-family: var(--ff-body);
 }
 
+.footer-logo-section h3 {
+  font-size: 3rem;
+}
 footer {
   height: 65%;
   width: 100%;
@@ -534,7 +537,7 @@ input {
   .nav-logo {
     position: absolute;
     left: 200px;
-    top: 30px;
+    /* top: 30px; */
     font-weight: var(--fw-bold);
   }
   
@@ -573,7 +576,7 @@ input {
     margin: 0 10px;
   }
   .nav-logo {
-    top: 23px;
+    top: 28px;
     left: 20px;
   }
 
@@ -707,8 +710,8 @@ input {
 
 
 
-  .footer-logo-section img{
-    width: 50%;
+  .footer-logo-section h3{
+    font-size: 1rem;
   }
   .footer-location {
     width: 100%;
