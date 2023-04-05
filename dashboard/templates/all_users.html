@@ -1,43 +1,218 @@
 {% extends "base.html" %}
 {% load static %}
 {% block additional_styles %}
-  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 {% endblock %}
 
 
 {% block content %}
 <div class="table-container">
   <table class="users-table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Mobile</th>
-      <th>Email</th>
-      <th>Status</th>
-      <th>Verify</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for user in user_data %}
-    <tr>
-      <td>{{ user.question_data.0.answer }}</td>
-      <td>{{ user.mobile_number }}</td>
-      <td>{{ user.question_data.1.answer }}</td>
-      <td>{{ user.user_status }}</td>
-      <td> 
-        {% if user.user_status == "complete" %}
-          <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm user-table-btn">Verify</button>
-        {% elif user.user_status == "verified" %}
-          <button class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm user-table-btn">Verified</button>
-        {% elif user.user_status == "started"  %}
-          <button class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm user-table-btn">Pending</button>
-        {% else %}
-          <button class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm user-table-btn">!</button>
-        {% endif %}
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Verify</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in user_data %}
+      <tr>
+        <td>{{ user.question_data.0.answer }}</td>
+        <td>{{ user.mobile_number }}</td>
+        <td>{{ user.question_data.1.answer }}</td>
+        <td>{{ user.user_status }}</td>
+        <td>
+          {% if user.user_status == "complete" %}
+              <a href="#" data-toggle="modal" data-target="#verifyModal{{ user.id }}" data-userid="{{ user.id }}">
+                <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm user-table-btn">Verify</button>
+              </a>
+          {% elif user.user_status == "verified" %}
+              <button class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm user-table-btn">Verified</button>
+          {% elif user.user_status == "started" %}
+              <button class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm user-table-btn">Pending</button>
+          {% else %}
+              <button class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm user-table-btn">!</button>
+          {% endif %}
+          <button data-toggle="modal" data-target="#editModal{{ user.id }}"
+          class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm user-table-edit-btn">Edit
+        </button>
+        <button data-toggle="modal" data-target="#deleteModal{{ user.id }}"
+          class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm user-table-edit-btn">Delete
+        </button>
+        </td>
+      </tr>
+
+      <!-- USER VERIFY MODAL  -->
+        <div class="modal fade" id="verifyModal{{ user.id }}" tabindex="-1" role="dialog"
+          aria-labelledby="verifyModalLabel{{ user.id }}" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Verify this user?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Select "Verify" below if you are ready to verify this user.
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">
+                  Cancel
+                </button>
+                <button class="btn btn-primary" onclick="verifyUser({{ user.id }})">Verify</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+              <!-- USER DELETE MODAL  -->
+              <div class="modal fade" id="deleteModal{{ user.id }}" tabindex="-1" role="dialog"
+              aria-labelledby="deleteModalLabel{{ user.id }}" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete this user?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">×</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    Select "Delete" below if you are ready to delete this user.
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">
+                      Cancel
+                    </button>
+                    <button class="btn btn-primary" onclick="deleteUser({{ user.id }})">delete</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+      <!-- USER EDIT MODAL  -->
+      <div class="modal fade" id="editModal{{ user.id }}" tabindex="-1" role="dialog"
+      aria-labelledby="editModalLabel{{ user.id }}" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit this user?</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="editForm" method="post" onsubmit="editUser({{ user.id }}, event); return false;">
+              <div class="mb-3">
+                <label for="recipient-status" class="col-form-label">Status:</label>
+                <input type="text" class="form-control" id="recipient-status" name="status" value="{{ user.user_status }}">
+              </div>
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label">Name:</label>
+                <input type="text" class="form-control" id="recipient-name" name="name" value="{{ user.question_data.0.answer }}">
+              </div>
+              <div class="mb-3">
+                <label for="recipient-email" class="col-form-label">Email:</label>
+                <input type="text" class="form-control" id="recipient-email" name="email" value="{{ user.question_data.1.answer }}">
+              </div>
+              <div class="mb-3">
+                <label for="recipient-mobile" class="col-form-label">Mobile:</label>
+                <input type="text" class="form-control" id="recipient-mobile" name="mobile" value="{{ user.question_data.2.answer }}">
+              </div>
+              <div class="mb-3">
+                <label for="recipient-aadhar" class="col-form-label">Aadhar:</label>
+                <input type="text" class="form-control" id="recipient-aadhar" name="aadhar" value="{{ user.question_data.3.answer }}">
+              </div>
+              <div class="mb-3">
+                <label for="recipient-pan" class="col-form-label">PAN:</label>
+                <input type="text" class="form-control" id="recipient-pan" name="pan" value="{{ user.question_data.4.answer }}">
+              </div>
+              <hr>
+              <button class="btn btn-secondary" type="button" data-dismiss="modal">
+                Cancel
+              </button>
+              <button class="btn btn-primary" type="submit">Save</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+<div><p>footer</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+  function verifyUser(user_id) {
+    $.ajax({
+      url: "{% url 'verify_user' %}",
+      type: 'POST',
+      data: {
+        'user_id': user_id,
+      },
+      success: function (response) {
+        if (response.success) {
+          location.reload()
+        } else {
+          alert('An error occurred while verifying the user. IN');
+        }
+      },
+      error: function () {
+        alert('An error occurred while verifying the user. OUT');
+      }
+    });
+  }
+
+  function editUser(user_id, event) {
+    event.preventDefault(); // prevent the form from submitting
+    var form = $('#editForm');
+    var serializedData = form.serialize();
+    $.ajax({
+      url: "{% url 'edit_user' %}",
+      type: 'POST',
+      data: serializedData + "&id=" + user_id,
+      success: function (response) {
+        if (response.success) {
+          location.reload()
+        } else {
+          alert('An error occurred while editing the user. IN');
+        }
+      },
+      error: function () {
+        alert('An error occurred while editing the user. OUT');
+      }
+    });
+  }
+
+  function deleteUser(user_id) {
+    $.ajax({
+      url: "{% url 'delete_user' %}",
+      type: 'POST',
+      data: {
+        'user_id': user_id,
+      },
+      success: function (response) {
+        if (response.success) {
+          location.reload()
+        } else {
+          alert('An error occurred while deleteing the user. IN');
+        }
+      },
+      error: function () {
+        alert('An error occurred while deleteing the user. OUT');
+      }
+    });
+  }
+</script>
 {% endblock %}

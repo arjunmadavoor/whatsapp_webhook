@@ -23,6 +23,8 @@ urlpatterns = [
     path('', include('home.urls')),
     path('login/', include('login.urls')),
     path('dashboard/', include('dashboard.urls')),
+    # path('verify_user/', include('dashboard.urls')),
+    
     #  path('logout/', LogoutView.as_view(), name='logout'),
     
 ]
