@@ -108,30 +108,30 @@
             </button>
           </div>
           <div class="modal-body">
-            <form id="editForm" method="post" onsubmit="editUser({{ user.id }}, event); return false;">
+            <form id="{{ user.id }}-editForm" method="post" onsubmit="editUser({{ user.id }}, event); return false;">
               <div class="mb-3">
-                <label for="recipient-status" class="col-form-label">Status:</label>
-                <input type="text" class="form-control" id="recipient-status" name="status" value="{{ user.user_status }}">
+                <label for="{{ user.id }}-status" class="col-form-label">Status:</label>
+                <input type="text" class="form-control" id="{{ user.id }}-status" name="status" value="{{ user.user_status }}">
               </div>
               <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Name:</label>
-                <input type="text" class="form-control" id="recipient-name" name="name" value="{{ user.question_data.0.answer }}">
+                <label for="{{ user.id }}-name" class="col-form-label">Name:</label>
+                <input type="text" class="form-control" id="{{ user.id }}-name" name="name" value="{{ user.question_data.0.answer }}">
               </div>
               <div class="mb-3">
-                <label for="recipient-email" class="col-form-label">Email:</label>
-                <input type="text" class="form-control" id="recipient-email" name="email" value="{{ user.question_data.1.answer }}">
+                <label for="{{ user.id }}-email" class="col-form-label">Email:</label>
+                <input type="text" class="form-control" id="{{ user.id }}-email" name="email" value="{{ user.question_data.1.answer }}">
               </div>
               <div class="mb-3">
-                <label for="recipient-mobile" class="col-form-label">Mobile:</label>
-                <input type="text" class="form-control" id="recipient-mobile" name="mobile" value="{{ user.question_data.2.answer }}">
+                <label for="{{ user.id }}-mobile" class="col-form-label">Mobile:</label>
+                <input type="text" class="form-control" id="{{ user.id }}-mobile" name="mobile" value="{{ user.question_data.2.answer }}">
               </div>
               <div class="mb-3">
-                <label for="recipient-aadhar" class="col-form-label">Aadhar:</label>
-                <input type="text" class="form-control" id="recipient-aadhar" name="aadhar" value="{{ user.question_data.3.answer }}">
+                <label for="{{ user.id }}-aadhar" class="col-form-label">Aadhar:</label>
+                <input type="password" class="form-control" id="{{ user.id }}-aadhar" name="aadhar" readonly value="{{ user.question_data.3.answer }}">
               </div>
               <div class="mb-3">
-                <label for="recipient-pan" class="col-form-label">PAN:</label>
-                <input type="text" class="form-control" id="recipient-pan" name="pan" value="{{ user.question_data.4.answer }}">
+                <label for="{{ user.id }}-pan" class="col-form-label">PAN:</label>
+                <input type="text" class="form-control" id="{{ user.id }}-pan" name="pan" readonly value="{{ user.question_data.4.answer }}">
               </div>
               <hr>
               <button class="btn btn-secondary" type="button" data-dismiss="modal">
@@ -139,9 +139,6 @@
               </button>
               <button class="btn btn-primary" type="submit">Save</button>
             </form>
-          </div>
-          <div class="modal-footer">
-<div><p>footer</p></div>
           </div>
         </div>
       </div>
@@ -176,7 +173,7 @@
 
   function editUser(user_id, event) {
     event.preventDefault(); // prevent the form from submitting
-    var form = $('#editForm');
+    var form = $('#' + user_id + '-editForm');
     var serializedData = form.serialize();
     $.ajax({
       url: "{% url 'edit_user' %}",
@@ -204,6 +201,7 @@
       },
       success: function (response) {
         if (response.success) {
+          console.log(response)
           location.reload()
         } else {
           alert('An error occurred while deleteing the user. IN');
@@ -214,5 +212,6 @@
       }
     });
   }
+
 </script>
 {% endblock %}
