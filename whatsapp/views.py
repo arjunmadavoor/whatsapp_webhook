@@ -28,7 +28,8 @@ class WhatsAppView(View):
         # Parse the request body from the POST
         body_str = request.body.decode('utf-8')
         body_obj = json.loads(body_str)
-
+        
+        print('######BOdyyy######')
         # Check the Incoming webhook message
         print("Body Object: ", body_obj)
 
@@ -37,11 +38,13 @@ class WhatsAppView(View):
             if 'entry' in body_obj and body_obj['entry'][0]['changes'] \
                 and body_obj['entry'][0]['changes'][0]['value']['messages'] \
                 and body_obj['entry'][0]['changes'][0]['value']['messages'][0]:
-
-                phone_number_id = body_obj['entry'][0]['changes'][0]['value']['metadata']['phone_number_id']
-                from_number = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['from'] # extract the phone number from the webhook payload
-                msg_body = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'] # extract the message text from the webhook payload
-                checkMessage(str(phone_number_id), str(from_number), str(msg_body))
+                if body_obj['entry'][0]['changes'][0]['value']['type'] == 'text':
+                    phone_number_id = body_obj['entry'][0]['changes'][0]['value']['metadata']['phone_number_id']
+                    from_number = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['from'] # extract the phone number from the webhook payload
+                    msg_body = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'] # extract the message text from the webhook payload
+                    checkMessage(str(phone_number_id), str(from_number), str(msg_body))
+                else:
+                    print('######Attachment######')
 
             return HttpResponse(status=200)
         else:
@@ -75,5 +78,3 @@ class WhatsAppView(View):
         except Exception as _e:
             print(_e)
         
-    
-
