@@ -13,6 +13,7 @@ env_path = os.path.join(settings.BASE_DIR, '.env')
 environ.Env.read_env(env_file=env_path)
 
 from utils.check_message import checkMessage
+from utils.manage_document import manageDocument
 
 
 
@@ -43,8 +44,12 @@ class WhatsAppView(View):
                     from_number = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['from'] # extract the phone number from the webhook payload
                     msg_body = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'] # extract the message text from the webhook payload
                     checkMessage(str(phone_number_id), str(from_number), str(msg_body))
+                if body_obj['entry'][0]['changes'][0]['value']['messages'][0]['type'] == 'document':
+                    msg_body = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']
+                    manageDocument(body_obj)
+                    pass
                 else:
-                    print('######Attachment######')
+                    print('######Diff type######')
 
             return HttpResponse(status=200)
         else:
