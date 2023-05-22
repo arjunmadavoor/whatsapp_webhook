@@ -45,7 +45,6 @@ class WhatsAppView(View):
                     msg_body = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'] # extract the message text from the webhook payload
                     checkMessage(str(phone_number_id), str(from_number), str(msg_body))
                 if body_obj['entry'][0]['changes'][0]['value']['messages'][0]['type'] == 'document':
-                    msg_body = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']
                     manageDocument(body_obj)
                     pass
                 else:
