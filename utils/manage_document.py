@@ -14,6 +14,7 @@ environ.Env.read_env(env_file=env_path)
 
 
 def get_media_url(media_id):
+    print("Inside get_media_url function: ", media_id)
     whatsapp_token = env('whatsapp_token')
     try:
         url = "https://graph.facebook.com/v12.0/" + str(media_id) + "/messages?access_token=" + str(whatsapp_token)
@@ -25,6 +26,7 @@ def get_media_url(media_id):
         # headers = {"Content-Type": "application/json"}
 
         response = requests.get(url)
+        print(response)
         if response.status_code == 200:
             print("URL retrieved successfully!")
             print('URL: ', response.url)
@@ -78,5 +80,5 @@ def manageDocument(body_obj):
     print("doc_id: ", doc_id)
     print("mime_type: ", mime_type)
     
-    media_url = get_media_url(doc_id)
-    download_media(media_url)
+    media_url = get_media_url(str(doc_id))
+    download_media(str(media_url))
