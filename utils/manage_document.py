@@ -61,6 +61,8 @@ def download_media(url):
         if response.status_code == 200:
             print("URL download successfully!")
             print('RESPONSE: ', response.json())
+            with open ('mynewfile.xlsx', 'wb') as file:
+                file.write(response.content)
         else:
             print("Error download message:", response.text)
     except Exception as _e:
