@@ -14,6 +14,7 @@ environ.Env.read_env(env_file=env_path)
 
 
 def get_media_url(media_id):
+    whatsapp_token = env('whatsapp_token')
     try:
         url = "https://graph.facebook.com/v12.0/" + str(media_id) + "/messages?access_token=" + str(whatsapp_token)
         # payload = {
@@ -39,6 +40,7 @@ def get_media_url(media_id):
 
 
 def download_media(url):
+    whatsapp_token = env('whatsapp_token')
     try:
         url = "https://graph.facebook.com/v12.0/" + str(url) + "/messages?access_token=" + str(whatsapp_token)
         # payload = {
