@@ -29,12 +29,12 @@ def get_media_url(media_id):
 
 
         response = requests.get(url, headers=headers)
-        print(response)
+        print(response.json())
         if response.status_code == 200:
             print("URL retrieved successfully!")
-            print('URL: ', response.url)
-            out_url = response.url
-            return out_url
+            response_out = response.json()
+            print('URL: ', response_out['url'])
+            return response_out['url']
         else:
             print("Error retrieved message:", response.text)
     except Exception as _e:
@@ -60,7 +60,7 @@ def download_media(url):
         response = requests.get(url, headers=headers)
         if response.status_code == 200:
             print("URL download successfully!")
-            print('RESPONSE: ', response)
+            print('RESPONSE: ', response.json())
         else:
             print("Error download message:", response.text)
     except Exception as _e:
