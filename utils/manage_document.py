@@ -45,9 +45,10 @@ def get_media_url(media_id):
 
 
 def download_media(url):
+    url_without_https = url.replace("https://", "")
     whatsapp_token = env('whatsapp_token')
     try:
-        url = "https://graph.facebook.com/v12.0/" + str(url)
+        url = "https://graph.facebook.com/v12.0/" + str(url_without_https)
         # payload = {
         #     "messaging_product": "whatsapp",
         #     "to": from_number,
