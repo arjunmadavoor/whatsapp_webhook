@@ -17,15 +17,18 @@ def get_media_url(media_id):
     print("Inside get_media_url function: ", media_id)
     whatsapp_token = env('whatsapp_token')
     try:
-        url = "https://graph.facebook.com/v12.0/" + str(media_id) + "/messages?access_token=" + str(whatsapp_token)
+        url = "https://graph.facebook.com/v12.0/" + str(media_id)
         # payload = {
         #     "messaging_product": "whatsapp",
         #     "to": from_number,
         #     "text": { "body": msg_body }
         # }
-        # headers = {"Content-Type": "application/json"}
+        headers = {
+            "Authorization": f"Bearer {str(whatsapp_token)}"
+        }
 
-        response = requests.get(url)
+
+        response = requests.get(url, headers=headers)
         print(response)
         if response.status_code == 200:
             print("URL retrieved successfully!")
@@ -44,15 +47,17 @@ def get_media_url(media_id):
 def download_media(url):
     whatsapp_token = env('whatsapp_token')
     try:
-        url = "https://graph.facebook.com/v12.0/" + str(url) + "/messages?access_token=" + str(whatsapp_token)
+        url = "https://graph.facebook.com/v12.0/" + str(url)
         # payload = {
         #     "messaging_product": "whatsapp",
         #     "to": from_number,
         #     "text": { "body": msg_body }
         # }
         # headers = {"Content-Type": "application/json"}
-
-        response = requests.get(url)
+        headers = {
+            "Authorization": f"Bearer {str(whatsapp_token)}"
+        }
+        response = requests.get(url, headers=headers)
         if response.status_code == 200:
             print("URL download successfully!")
             print('RESPONSE: ', response)
