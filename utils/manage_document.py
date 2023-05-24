@@ -62,6 +62,7 @@ def download_media(url):
         if response.status_code == 200:
             print("URL download successfully!")
             print('RESPONSE: ', response.json())
+            print('CONTENT: ', response.content)
             with open ('mynewfile.xlsx', 'wb') as file:
                 file.write(response.content)
         else:
