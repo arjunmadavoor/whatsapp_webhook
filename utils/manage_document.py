@@ -45,10 +45,11 @@ def get_media_url(media_id):
 
 
 def download_media(url):
-    url_without_https = url.replace("https://", "")
+    #url_without_https = url.replace("https://", "")
     whatsapp_token = env('whatsapp_token')
     try:
-        url = "https://graph.facebook.com/v12.0/" + str(url_without_https)
+        # url = "https://graph.facebook.com/v12.0/" + str(url_without_https)
+        # print('url: ', url)
         # payload = {
         #     "messaging_product": "whatsapp",
         #     "to": from_number,
@@ -58,6 +59,7 @@ def download_media(url):
         headers = {
             "Authorization": f"Bearer {str(whatsapp_token)}"
         }
+        print('url: ', url)
         response = requests.get(url, headers=headers)
         if response.status_code == 200:
             print("URL download successfully!")
