@@ -4,3 +4,5 @@ python-dotenv==1.0.0
 django-environ==0.10.0
 openai==0.27.2
 django-bootstrap-v5==1.0.11
+#python-docx==0.8.11
+textract==1.6.5

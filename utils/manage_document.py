@@ -9,7 +9,7 @@ from whatsapp.models import ChatbotData
 from whatsapp.models import UserData
 from datetime import datetime
 from utils.check_message import sendMessage
-import docx
+import textract
 import re
 
 
@@ -87,28 +87,42 @@ def categorize_media(file_path, media_info):
     keywords = ["python", "django", "devops", "cicd", "linux", "react", "reactjs", "angular", "Ansible", "Celenium", "docker"]
 
     if str(mime_type) == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-        # Load the docx file
-        doc = docx.Document(file_path)
-        # Extract the text from the docx file
-        text = ' '.join([paragraph.text for paragraph in doc.paragraphs])
-        # Check for matching keywords
-        matching_keywords = [keyword for keyword in keywords if re.search(r'\b{}\b'.format(keyword), text, re.IGNORECASE)]
+        # Load the DOCX file and extract text
+        text = textract.process(file_path, method='docx')
 
-        # Print the matching keywords
-        print("matching_keywords: ", matching_keywords)
-        msg_body = f"👋 Hello there! 👋,\n\nMatching keywords in the above attachments are {matching_keywords}"
-        for keyword in matching_keywords:
-            print("Matching keyword:", keyword)
-        sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
-    # elif str(mime_type) == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-    #     print("IT'S A XLSX FILE....")
+        # Convert the extracted bytes to a string
+        text = text.decode('utf-8')
+    elif str(mime_type) == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+        print("IT'S A XLSX FILE....")
+        # Load the Excel file and extract text
+        text = textract.process(file_path, method='xlrd')
 
-    # elif str(mime_type) == 'application/pdf':
-    #     print("IT'S A PDF FILE....")
+        # Convert the extracted bytes to a string
+        text = text.decode('utf-8')
+
+
+    elif str(mime_type) == 'application/pdf':
+        print("IT'S A PDF FILE....")
+        # Load the PDF file and extract text
+        text = textract.process(file_path, method='pdfminer')  # or method='pdftotext'
+
+        # Convert the extracted bytes to a string
+        text = text.decode('utf-8')
 
     else:
         print("NOT SUPPORTED FORMAT FILE....")
+        text = "NOT SUPPORTED FORMAT FILE...."
 
+    # Check for matching keywords
+    matching_keywords = [keyword for keyword in keywords if re.search(r'\b{}\b'.format(keyword), text, re.IGNORECASE)]
+
+    # Print the matching keywords
+    for keyword in matching_keywords:
+        print("Matching keyword:", keyword)
+    # Print the matching keywords
+    print("matching_keywords: ", matching_keywords)
+    msg_body = f"👋 Hello there! 👋,\n\nMatching keywords in the above attachments are {matching_keywords}"
+    sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
 def download_media(url, media_info):
     #url_without_https = url.replace("https://", "")
     whatsapp_token = env('whatsapp_token')
