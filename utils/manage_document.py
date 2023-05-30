@@ -8,6 +8,7 @@ from django.conf import settings
 from whatsapp.models import ChatbotData
 from whatsapp.models import UserData
 from datetime import datetime
+from utils.check_message import sendMessage
 import docx
 import re
 
@@ -79,6 +80,9 @@ def manage_mime_type(response, media_info):
 
 def categorize_media(file_path, media_info):
     mime_type = media_info['mime_type']
+    phone_number_id = media_info['phone_number_id']
+    from_number = media_info['from_number']
+    whatsapp_token = env('whatsapp_token')
     # List of keywords to match
     keywords = ["python", "django", "devops", "cicd", "linux", "react", "reactjs", "angular", "Ansible", "Celenium", "docker"]
 
@@ -92,9 +96,10 @@ def categorize_media(file_path, media_info):
 
         # Print the matching keywords
         print("matching_keywords: ", matching_keywords)
+        msg_body = f"👋 Hello there! 👋,\n\nMatching keywords in the above attachments are {matching_keywords}"
         for keyword in matching_keywords:
             print("Matching keyword:", keyword)
-
+        sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
     # elif str(mime_type) == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
     #     print("IT'S A XLSX FILE....")
 
