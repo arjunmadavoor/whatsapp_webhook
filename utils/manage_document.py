@@ -8,6 +8,10 @@ from django.conf import settings
 from whatsapp.models import ChatbotData
 from whatsapp.models import UserData
 from datetime import datetime
+import docx
+import re
+
+
 import environ
 env = environ.Env()
 env_path = os.path.join(settings.BASE_DIR, '.env')
@@ -58,6 +62,7 @@ def manage_mime_type(response, media_info):
         file_path = f"/home/arjunmdr/whatsapp_webhook/files/{doc_name}_{time_format}.docx"  # Provide the desired file path
         with open (file_path, 'wb') as file:
             file.write(response.content)
+        categorize_media(file_path, media_info)
     elif str(mime_type) == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
         print("IT'S A XLSX FILE....")
         file_path = f"/home/arjunmdr/whatsapp_webhook/files/{doc_name}_{time_format}.xlsx"  # Provide the desired file path
@@ -71,6 +76,32 @@ def manage_mime_type(response, media_info):
     else:
         print("NOT SUPPORTED FORMAT FILE....")
 
+
+def categorize_media(file_path, media_info):
+    mime_type = media_info['mime_type']
+    # List of keywords to match
+    keywords = ["python", "django", "devops", "cicd", "linux", "react", "angular"]
+
+    if str(mime_type) == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+        # Load the docx file
+        doc = docx.Document(file_path)
+        # Extract the text from the docx file
+        text = ' '.join([paragraph.text for paragraph in doc.paragraphs])
+        # Check for matching keywords
+        matching_keywords = [keyword for keyword in keywords if re.search(r'\b{}\b'.format(keyword), text, re.IGNORECASE)]
+
+        # Print the matching keywords
+        for keyword in matching_keywords:
+            print("Matching keyword:", keyword)
+
+    # elif str(mime_type) == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+    #     print("IT'S A XLSX FILE....")
+
+    # elif str(mime_type) == 'application/pdf':
+    #     print("IT'S A PDF FILE....")
+
+    else:
+        print("NOT SUPPORTED FORMAT FILE....")
 
 def download_media(url, media_info):
     #url_without_https = url.replace("https://", "")
