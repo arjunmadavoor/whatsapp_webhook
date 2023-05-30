@@ -80,7 +80,7 @@ def manage_mime_type(response, media_info):
 def categorize_media(file_path, media_info):
     mime_type = media_info['mime_type']
     # List of keywords to match
-    keywords = ["python", "django", "devops", "cicd", "linux", "react", "angular"]
+    keywords = ["python", "django", "devops", "cicd", "linux", "react", "reactjs", "angular", "Ansible", "Celenium", "docker"]
 
     if str(mime_type) == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
         # Load the docx file
@@ -91,6 +91,7 @@ def categorize_media(file_path, media_info):
         matching_keywords = [keyword for keyword in keywords if re.search(r'\b{}\b'.format(keyword), text, re.IGNORECASE)]
 
         # Print the matching keywords
+        print("matching_keywords: ", matching_keywords)
         for keyword in matching_keywords:
             print("Matching keyword:", keyword)
 
