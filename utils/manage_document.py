@@ -7,6 +7,7 @@ import openai
 from django.conf import settings
 from whatsapp.models import ChatbotData
 from whatsapp.models import UserData
+from datetime import datetime
 import environ
 env = environ.Env()
 env_path = os.path.join(settings.BASE_DIR, '.env')
@@ -43,19 +44,36 @@ def get_media_url(media_id):
         print("ERROR: ", exc_type, fname, exc_tb.tb_lineno)
         print("EXCEPTION: ", _e)
 
+def manage_mime_type(response, media_info):
+    mime_type = media_info['mime_type']
+    doc_name = media_info['doc_name']
+    doc_name = doc_name[:5]
+    # Get the current time
+    current_time = datetime.now()
 
-def download_media(url):
+    # Format the time as 24_11_23_HH_MM_SS.txt
+    time_format = current_time.strftime('%y_%m_%d_%H_%M_%S')
+    if str(mime_type) == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+        print("IT'S A DOCX FILE....")
+        file_path = f"/home/arjunmdr/whatsapp_webhook/files/{doc_name}_{time_format}.docx"  # Provide the desired file path
+        with open (file_path, 'wb') as file:
+            file.write(response.content)
+    if str(mime_type) == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+        print("IT'S A XLSX FILE....")
+        file_path = f"/home/arjunmdr/whatsapp_webhook/files/{doc_name}_{time_format}.xlsx"  # Provide the desired file path
+        with open (file_path, 'wb') as file:
+            file.write(response.content)
+    if str(mime_type) == 'document/pdf':
+        print("IT'S A PDF FILE....")
+        file_path = f"/home/arjunmdr/whatsapp_webhook/files/{doc_name}_{time_format}.pdf"  # Provide the desired file path
+        with open (file_path, 'wb') as file:
+            file.write(response.content)
+
+
+def download_media(url, media_info):
     #url_without_https = url.replace("https://", "")
     whatsapp_token = env('whatsapp_token')
     try:
-        # url = "https://graph.facebook.com/v12.0/" + str(url_without_https)
-        # print('url: ', url)
-        # payload = {
-        #     "messaging_product": "whatsapp",
-        #     "to": from_number,
-        #     "text": { "body": msg_body }
-        # }
-        # headers = {"Content-Type": "application/json"}
         headers = {
             "Authorization": f"Bearer {str(whatsapp_token)}"
         }
@@ -63,10 +81,7 @@ def download_media(url):
         response = requests.get(url, headers=headers)
         if response.status_code == 200:
             print("URL download successfully!")
-            print('RESPONSE: ', response.json())
-            print('CONTENT: ', response.content)
-            with open ('mynewfile.xlsx', 'wb') as file:
-                file.write(response.content)
+            manage_mime_type(response, media_info)
         else:
             print("Error download message:", response.text)
     except Exception as _e:
@@ -85,6 +100,13 @@ def manageDocument(body_obj):
     doc_name = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['document']['filename']
     doc_id = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['document']['id']
     mime_type = body_obj['entry'][0]['changes'][0]['value']['messages'][0]['document']['mime_type']
+    media_info = {
+        'phone_number_id': phone_number_id,
+        'from_number': from_number,
+        'doc_name': doc_name,
+        'doc_id': doc_id,
+        'mime_type': mime_type
+    }
     print("phone_number_id: ", phone_number_id)
     print("from_number: ", from_number)
     print("doc_name: ", doc_name)
@@ -92,4 +114,4 @@ def manageDocument(body_obj):
     print("mime_type: ", mime_type)
     
     media_url = get_media_url(str(doc_id))
-    download_media(str(media_url))
+    download_media(str(media_url), media_info)
