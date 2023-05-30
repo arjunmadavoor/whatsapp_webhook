@@ -69,13 +69,16 @@ def manage_mime_type(response, media_info):
         file_path = f"/home/arjunmdr/whatsapp_webhook/files/{doc_name}_{time_format}.xlsx"  # Provide the desired file path
         with open (file_path, 'wb') as file:
             file.write(response.content)
+        categorize_media(file_path, media_info)
     elif str(mime_type) == 'application/pdf':
         print("IT'S A PDF FILE....")
         file_path = f"/home/arjunmdr/whatsapp_webhook/files/{doc_name}_{time_format}.pdf"  # Provide the desired file path
         with open (file_path, 'wb') as file:
             file.write(response.content)
+        categorize_media(file_path, media_info)
     else:
         print("NOT SUPPORTED FORMAT FILE....")
+        categorize_media("unsupported", media_info)
 
 
 def categorize_media(file_path, media_info):
@@ -89,18 +92,14 @@ def categorize_media(file_path, media_info):
     if str(mime_type) == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
         # Load the DOCX file and extract text
         text = textract.process(file_path, method='docx')
-
         # Convert the extracted bytes to a string
         text = text.decode('utf-8')
     elif str(mime_type) == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
         print("IT'S A XLSX FILE....")
         # Load the Excel file and extract text
         text = textract.process(file_path, method='xlrd')
-
         # Convert the extracted bytes to a string
         text = text.decode('utf-8')
-
-
     elif str(mime_type) == 'application/pdf':
         print("IT'S A PDF FILE....")
         # Load the PDF file and extract text
@@ -108,21 +107,22 @@ def categorize_media(file_path, media_info):
 
         # Convert the extracted bytes to a string
         text = text.decode('utf-8')
-
     else:
         print("NOT SUPPORTED FORMAT FILE....")
-        text = "NOT SUPPORTED FORMAT FILE...."
+        text = "UNSUPPORTED"
 
     # Check for matching keywords
     matching_keywords = [keyword for keyword in keywords if re.search(r'\b{}\b'.format(keyword), text, re.IGNORECASE)]
-
     # Print the matching keywords
     for keyword in matching_keywords:
         print("Matching keyword:", keyword)
     # Print the matching keywords
     print("matching_keywords: ", matching_keywords)
     msg_body = f"👋 Hello there! 👋,\n\nMatching keywords in the above attachments are {matching_keywords}"
+    if text == "UNSUPPORTED":
+        msg_body = f"👋 Hello there!,\n\nThis file format is not supported!"
     sendMessage(phone_number_id, from_number, msg_body, whatsapp_token)
+
 def download_media(url, media_info):
     #url_without_https = url.replace("https://", "")
     whatsapp_token = env('whatsapp_token')
