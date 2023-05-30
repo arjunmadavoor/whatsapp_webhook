@@ -58,16 +58,18 @@ def manage_mime_type(response, media_info):
         file_path = f"/home/arjunmdr/whatsapp_webhook/files/{doc_name}_{time_format}.docx"  # Provide the desired file path
         with open (file_path, 'wb') as file:
             file.write(response.content)
-    if str(mime_type) == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+    elif str(mime_type) == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
         print("IT'S A XLSX FILE....")
         file_path = f"/home/arjunmdr/whatsapp_webhook/files/{doc_name}_{time_format}.xlsx"  # Provide the desired file path
         with open (file_path, 'wb') as file:
             file.write(response.content)
-    if str(mime_type) == 'document/pdf':
+    elif str(mime_type) == 'application/pdf':
         print("IT'S A PDF FILE....")
         file_path = f"/home/arjunmdr/whatsapp_webhook/files/{doc_name}_{time_format}.pdf"  # Provide the desired file path
         with open (file_path, 'wb') as file:
             file.write(response.content)
+    else:
+        print("NOT SUPPORTED FORMAT FILE....")
 
 
 def download_media(url, media_info):
