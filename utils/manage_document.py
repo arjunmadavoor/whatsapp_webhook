@@ -9,6 +9,7 @@ from whatsapp.models import ChatbotData
 from whatsapp.models import UserData
 from datetime import datetime
 from utils.check_message import sendMessage
+from PyPDF2 import PdfReader
 import textract
 import re
 
@@ -103,10 +104,18 @@ def categorize_media(file_path, media_info):
     elif str(mime_type) == 'application/pdf':
         print("IT'S A PDF FILE....")
         # Load the PDF file and extract text
-        text = textract.process(file_path, method='pdfminer')  # or method='pdftotext'
-
+        #text = textract.process(file_path, method='pdfminer')  # or method='pdftotext'
         # Convert the extracted bytes to a string
-        text = text.decode('utf-8')
+        #text = text.decode('utf-8')
+        pdf_file = open(file_path, 'rb')  # Open the PDF file in read-binary mode
+        pdf_reader = PdfReader(pdf_file)
+        text = ''
+        for page_num in range(len(pdf_reader.pages)):
+            page = pdf_reader.pages[page_num]
+            text += page.extract_text()
+
+        # Close the PDF file
+        pdf_file.close()
     else:
         print("NOT SUPPORTED FORMAT FILE....")
         text = "UNSUPPORTED"
